@@ -259,7 +259,16 @@ if __name__ == '__main__':
             color=zeros((len(xys),3),np.uint8)+(255,127,31),
             line_endpoint_indicies=rndint(400,size=(30,2)),
         )
-        z1.add(xys+na([-5,4]),(50,255,255),line_endpoint_indicies=rndint(200,size=(30,2)))# rndint(255,size=(len(xys),3)))# 
+        z1.add(
+            xys+na([-5,4]),
+            color=(50,255,255),
+            line_endpoint_indicies=rndint(200,size=(30,2)),
+        )
+        z1.add(
+            xys=na([(1,1),(1,-1),(0,0)]),
+            color=(255,0,0),
+            line_endpoint_indicies=((0,1),(1,2),(2,0)),
+        )
         z1.graph(-9,9,-9,thickness=2)
         z1.show(1.)
         z1.report()

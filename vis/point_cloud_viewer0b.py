@@ -16,17 +16,20 @@ class Viewer:
     ):
         assert type(xyzs_list) == list
         assert type(color_list) == list
+        assert type(line_endpoint_indicies_list) == list
         _.xyzs_list = xyzs_list
         _.xyzs_index = 0
         _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
         _.color_list = color_list
         _.color = _.color_list[_.xyzs_index]
+        _.line_endpoint_indicies_list = line_endpoint_indicies_list
+        _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
         _.xmin = xmin
         _.xmax = xmax
         _.ymin = ymin
         _.transform = get_IdentityMatrix()
         _.zgraph = ZGraph(img_width,img_height,title)
-        _.zgraph.add(1.0*_.xyzs[:,:2], _.color)
+        _.zgraph.add(1.0*_.xyzs[:,:2],_.color,_.line_endpoint_indicies)
         _.zgraph.graph(_.xmin,_.xmax,_.ymin)
         _.zgraph.show()
         _.transformation_list = []
@@ -78,7 +81,7 @@ class Viewer:
 
     def get_img(_):
         xyzs_ = _.xyzs @ _.transform
-        _.zgraph.add(xyzs_[:,:2],_.color)
+        _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies)
         _.zgraph.graph(_.xmin,_.xmax,_.ymin)
         return _.zgraph.img
 
@@ -117,11 +120,13 @@ class Viewer:
                 _.xyzs_index = max(0,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
+                _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
             elif s[0] == '=' and _.xyzs_list:
                 _.xyzs_index += 1
                 _.xyzs_index = min(len(_.xyzs_list)-1,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
+                _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
             else:
                 print('\tHuh?')
                 continue
@@ -139,7 +144,7 @@ class Viewer:
                 xyzs_ = _.xyzs @ _.transform
             else:
                 xyzs_ = 1.0 * _.xyzs
-            _.zgraph.add(xyzs_[:,:2],_.color)
+            _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies)
             _.zgraph.graph(_.xmin,_.xmax,_.ymin)
             _.zgraph.show()
 
@@ -165,11 +170,12 @@ if __name__ == '__main__':
     
     xyzs_list = []
     color_list = []
+    line_endpoint_indicies_list = []
     xyzs = rndn(1000,3)
     for i in range(20):
         xyzs_list.append(xyzs)
         color_list.append(rndint(255,size=(len(xyzs_list[0]),3)))
-
+        line_endpoint_indicies_list.append(rndint(100,size=(30,2)))
     xmin,xmax,ymin = -5,5,-5
 
     v = Viewer(
@@ -178,6 +184,7 @@ if __name__ == '__main__':
         xmax=xmax,
         ymin=ymin,
         color_list=color_list,
+        line_endpoint_indicies_list=line_endpoint_indicies_list,
     )
 
     if False:
