@@ -11,7 +11,8 @@ def print(*args, stdout=False, **kwargs):
 
 #print('test of stdout',stdout=True)
 
-
+def printr(*args, stdout=False, **kwargs):
+    print(*args, end='\r', flush=True,**kwargs)
 
 imports = (
     'os',

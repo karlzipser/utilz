@@ -153,11 +153,26 @@ class ZGraph:
                     si = np.where(p==a[0])[0]
                     ei = np.where(p==a[1])[0]
                     if len(si) > 0 and len(ei) > 0:
+
                         valid_enpoint_indicies.append((si[0],ei[0]))
+                        #cg((si[0],ei[0]),'is valid')
+                    else:
+                        pass #cr((si,ei),'is invalid')
                 for j in rlen(valid_enpoint_indicies):
-                    a,b = line_endpoint_indicies[j]
+                    a,b = valid_enpoint_indicies[j]
                     x0,y0 = pixels[a][:2]
                     x1,y1 = pixels[b][:2]
+                    """
+                    print(np.sqrt((x0-x1)**2))
+                    assert x0 in pixels[:,0]
+                    assert x1 in pixels[:,0]
+                    assert y0 in pixels[:,1]
+                    assert y1 in pixels[:,1]
+                    assert 0<=x0<_.height
+                    assert 0<=x1<_.height
+                    assert 0<=y0<_.height
+                    assert 0<=y1<_.height
+                    """
                     if len(pixels[a]) < 6:
                         c = [255,0,0]
                     else:
