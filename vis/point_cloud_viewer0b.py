@@ -86,10 +86,15 @@ class Viewer:
         return _.zgraph.img
 
     def interactive_loop(_):
+        s = 'x0'
         while True:
             A = None
             undo = False
+            s_prev = s
             s = input('command > ')
+            #print(qtds(s),len(s))
+            if s == '':
+                s = s_prev
             if s == 'q':
                 break
             if not s:
@@ -117,12 +122,18 @@ class Viewer:
                     print(a[0],'\n',a[1])
             elif s[0] == '-' and _.xyzs_list:
                 _.xyzs_index -= 1
-                _.xyzs_index = max(0,_.xyzs_index)
+                if _.xyzs_index < 0:
+                    _.xyzs_index = 0
+                    print('At begining.')
+                #_.xyzs_index = max(0,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
                 _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
             elif s[0] == '=' and _.xyzs_list:
                 _.xyzs_index += 1
+                if _.xyzs_index >= len(_.xyzs_list)-1:
+                    _.xyzs_index = len(_.xyzs_list)-1
+                    print('At end.')
                 _.xyzs_index = min(len(_.xyzs_list)-1,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]

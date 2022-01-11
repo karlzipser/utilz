@@ -300,7 +300,7 @@ def Percent(title='',prefix='',end_prefix=None):
 
 
 
-def percent(i,n,timer=None,title=''):
+def percent(i,n,title='',timer=None):
     if timer is not None:
         if not timer.check():
             return
