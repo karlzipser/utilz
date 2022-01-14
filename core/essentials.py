@@ -93,6 +93,7 @@ def raw_enter(optional_str=''):
 
 
 def is_even(q):
+    import numpy as np
     if np.mod(q,2) == 0:
         return True
     return False
