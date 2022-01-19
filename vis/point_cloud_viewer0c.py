@@ -55,6 +55,8 @@ class Viewer(Attr_menu_enabled):
         _.xmin = xmin
         _.xmax = xmax
         _.ymin = ymin
+        #_.zmax = zmax
+        #_.zmin = zmin
         _.img_width,_.img_height = img_width,img_height
         _.title = title
         _.transform = get_IdentityMatrix()
