@@ -119,7 +119,7 @@ class Viewer(Attr_menu_enabled):
         return _.zgraph.img
 
     def interactive_loop(_):
-        s = 'x0'
+        s = '='
         while True:
             A = None
             undo = False
