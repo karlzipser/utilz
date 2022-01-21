@@ -51,7 +51,10 @@ class Viewer(Attr_menu_enabled):
         _.color_list = color_list
         _.color = _.color_list[_.xyzs_index]
         _.line_endpoint_indicies_list = line_endpoint_indicies_list
-        _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
+        if len(_.line_endpoint_indicies_list):
+            _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
+        else:
+            _.line_endpoint_indicies = []
         _.xmin = xmin
         _.xmax = xmax
         _.ymin = ymin
@@ -167,7 +170,10 @@ class Viewer(Attr_menu_enabled):
                 #_.xyzs_index = max(0,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
-                _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
+                if len(_.line_endpoint_indicies_list):
+                    _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
+                else:
+                    _.line_endpoint_indicies = []
             elif s[0] == '=' and _.xyzs_list:
                 _.xyzs_index += 1
                 if _.xyzs_index >= len(_.xyzs_list)-1:
@@ -176,7 +182,10 @@ class Viewer(Attr_menu_enabled):
                 _.xyzs_index = min(len(_.xyzs_list)-1,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
-                _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
+                if len(_.line_endpoint_indicies_list):
+                    _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
+                else:
+                    _.line_endpoint_indicies = []
             else:
                 print('\tHuh?')
                 continue
