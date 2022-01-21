@@ -121,13 +121,15 @@ class Viewer(Attr_menu_enabled):
         _.zgraph.graph(_.xmin,_.xmax,_.ymin)
         return _.zgraph.img
 
-    def interactive_loop(_):
+    def interactive_loop(_,MetaData=None,dont_interact=False):
         s = '='
         while True:
+            #cg(_.xyzs_index)
             A = None
             undo = False
             s_prev = s
-            s = input('command > ')
+            if not dont_interact:
+                s = input('command > ')
             #print(qtds(s),len(s))
             if s == '':
                 s = s_prev
@@ -175,10 +177,14 @@ class Viewer(Attr_menu_enabled):
                 else:
                     _.line_endpoint_indicies = []
             elif s[0] == '=' and _.xyzs_list:
+                """
                 _.xyzs_index += 1
                 if _.xyzs_index >= len(_.xyzs_list)-1:
                     _.xyzs_index = len(_.xyzs_list)-1
                     print('At end.')
+                    if dont_interact:
+                        break
+                """
                 _.xyzs_index = min(len(_.xyzs_list)-1,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
@@ -206,6 +212,15 @@ class Viewer(Attr_menu_enabled):
             _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies)
             _.zgraph.graph(_.xmin,_.xmax,_.ymin)
             _.zgraph.show()
+            if MetaData is not None:
+                MetaData['imgs'][_.xyzs_index] = 1*_.zgraph.img
+            if s[0] == '=' and _.xyzs_list:
+                _.xyzs_index += 1
+                if _.xyzs_index >= len(_.xyzs_list):
+                    _.xyzs_index = len(_.xyzs_list)
+                    print('At end.')
+                    if dont_interact:
+                        break
 
 
 
