@@ -1,3 +1,9 @@
+# --allow for filling in of bounding box bases
+# --allow for only bounding box bases
+# --also draw separate images with centered square representing
+# height
+# --find way to map output colors to correct colors
+
 from utilz.vis import *
 from utilz.karguments.input__select__menu import *
 
