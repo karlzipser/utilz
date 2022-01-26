@@ -26,13 +26,18 @@ class ZGraph:
         _.pixels_list = []
 
 
-    def add(_,xys,color=(255,255,255),line_endpoint_indicies=[],do_fill=False):
+    def add(
+        _,
+        xys,
+        color=(255,255,255),
+        line_endpoint_indicies=[],
+        fill_indicies=[]):
         """
         Introduce collection of x-y points, colors and optional
         line point indicies to _.xys_color_list for later procesesing to
         pixels by _.graph().
         """
-        _.xys_color_list.append((na(xys),color,line_endpoint_indicies))
+        _.xys_color_list.append((na(xys),color,line_endpoint_indicies,fill_indicies))
 
 
     def graph(
@@ -42,7 +47,6 @@ class ZGraph:
         ymin=None,
         aspect_ratio=1.0,
         thickness=1,
-        do_fill=False,
     ):
         """
         Transform xy data with respective colors and line endpoints
@@ -58,13 +62,55 @@ class ZGraph:
 
         _.graph_has_been_called = True
 
-        for xys,color,line_endpoint_indicies in _.xys_color_list:
+        for xys,color,line_endpoint_indicies,fill_indicies in _.xys_color_list:
             pixels = pts2img(_.img,xys,_.xmin,_.xmax,_.ymin,_.aspect_ratio,color)
             _.pixels_list.append(pixels)
 
-            if do_fill:
-                contour_pts = []
-                fill_color = ()
+
+
+
+                
+                
+
+            if len(fill_indicies):
+                
+                for fi in fill_indicies:
+                    contour_pts = []
+                    valid_enpoint_indicies = []
+                    fill_color = ()
+                    p = pixels[:,2]
+                    for a in fi:
+                        si = np.where(p==a)[0]
+                        if len(si) > 0:
+                            valid_enpoint_indicies.append(si[0])
+                        else:
+                            pass
+                    fill_color = None
+                    for j in rlen(valid_enpoint_indicies):
+                        a = valid_enpoint_indicies[j]
+                        x0,y0 = pixels[a][:2]
+                        contour_pts.append((x0,shape(_.img)[0]-1-y0))
+                    print(len(contour_pts))
+                    if fill_color is None:
+                        if len(pixels[a]) < 6:
+                            c = color
+                        else:
+                            c = pixels[a][3:6].tolist()
+                        fill_color = c
+                    cv2.fillPoly(
+                        _.img,
+                        [na(contour_pts)],
+                        color=fill_color,
+                    )
+
+
+
+
+
+
+
+
+
 
             if len(line_endpoint_indicies):
                 
@@ -83,28 +129,19 @@ class ZGraph:
                     a,b = valid_enpoint_indicies[j]
                     x0,y0 = pixels[a][:2]
                     x1,y1 = pixels[b][:2]
-                    if do_fill:
-                        contour_pts.append((x0,shape(_.img)[0]-1-y0))
-                        contour_pts.append((x1,shape(_.img)[0]-1-y1))
 
                     if len(pixels[a]) < 6:
                         c = color#[255,0,0]
                     else:
                         c = pixels[a][3:6].tolist()
-                    if do_fill:
-                        fill_color = c
+
                     cv2.line(
                         _.img,
                         (x0,shape(_.img)[0]-1-y0),(x1,shape(_.img)[0]-1-y1),
                         color=c,
                         thickness=thickness,
                     )
-                if do_fill:
-                    cv2.fillPoly(
-                        _.img,
-                        [na(contour_pts)],
-                        color=fill_color,
-                    )
+
                     
                     
     def show(_,scale=1.0):
@@ -126,7 +163,7 @@ class ZGraph:
         s = [d2n('w x h = ',_.width,' x ',_.height)]
         s += [d2s('xmin:',dp(_.xmin),'xmax:',dp(_.xmax),
                     'ymin:',dp(_.xmin),'ymax:',dp(_.xmax)),]            
-        for xys,color,line_endpoint_indicies in _.xys_color_list:
+        for xys,color,line_endpoint_indicies,fill_indicies in _.xys_color_list:
             s += [
                 d2s(len(xys),'points'),
                 d2s('shape(color) =',shape(color)),
@@ -298,9 +335,21 @@ if __name__ == '__main__':
         z1.add(
             xys=2*xys*na([-1,1])+na([8,-7]),
             color=rndint(255,size=(len(xys),3)),
-            line_endpoint_indicies=rndint(400,size=(30,2)),
+            fill_indicies=( 
+                [rndint(200,size=(10)),
+                
+                ]
+            ),
         )
-        
+        z1.add(
+            xys=2*xys*na([-1,1])+na([8,-7]),
+            color=rndint(255,size=(len(xys),3)),
+            fill_indicies=( 
+                [rndint(200,size=(10)),
+                rndint(200,size=(10)),
+                rndint(200,size=(10)),]
+            ),
+        )        
         z1.add(
             xys=1*xys*na([-1,1])+na([12,3]),
             color=zeros((len(xys),3),np.uint8)+(255,127,31),
@@ -314,12 +363,16 @@ if __name__ == '__main__':
 
         )
         z1.add(
-            xys=na([(1,1),(1,-1),(0,0)]),
-            color=(255,255,0),
-            line_endpoint_indicies=((0,1),(1,2),(2,0)),
-            do_fill=True,
+            xys=na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
+            color=(0,255,0),
+            line_endpoint_indicies=((0,1),(1,2),(2,3),(3,4)),
         )
-        z1.graph(-9,9,-9,thickness=1,do_fill=False)
+        z1.add(
+            xys=0.75*na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
+            color=(255,0,0),
+            fill_indicies=([[0,1,2,3,4]]),
+        )
+        z1.graph(-9,9,-9,thickness=1)
         z1.show(1.)
         z1.report()
 

@@ -45,22 +45,29 @@ class Viewer(Attr_menu_enabled):
         img_height=300,
         color_list=[],
         line_endpoint_indicies_list=[],
+        fill_indicies_list=[],
         title='Viewer',
     ):
         Attr_menu_enabled.__init__(_)
         assert type(xyzs_list) == list
         assert type(color_list) == list
         assert type(line_endpoint_indicies_list) == list
+        assert type(fill_indicies_list) == list
         _.xyzs_list = xyzs_list
         _.xyzs_index = 0
         _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
         _.color_list = color_list
         _.color = _.color_list[_.xyzs_index]
         _.line_endpoint_indicies_list = line_endpoint_indicies_list
+        _.fill_indicies_list = fill_indicies_list
         if len(_.line_endpoint_indicies_list):
             _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
         else:
             _.line_endpoint_indicies = []
+        if len(_.fill_indicies_list):
+            _.fill_indicies = _.fill_indicies_list[_.xyzs_index]
+        else:
+            _.fill_indicies = []
         _.xmin = xmin
         _.xmax = xmax
         _.ymin = ymin
@@ -70,7 +77,7 @@ class Viewer(Attr_menu_enabled):
         _.title = title
         _.transform = get_IdentityMatrix()
         _.zgraph = ZGraph(_.img_width,_.img_height,_.title)
-        _.zgraph.add(1.0*_.xyzs[:,:2],_.color,_.line_endpoint_indicies)
+        _.zgraph.add(1.0*_.xyzs[:,:2],_.color,_.line_endpoint_indicies,_.fill_indicies)
         _.zgraph.graph(_.xmin,_.xmax,_.ymin)
         _.zgraph.show()
         _.transformation_list = []
@@ -123,7 +130,7 @@ class Viewer(Attr_menu_enabled):
 
     def get_img(_):
         xyzs_ = _.xyzs @ _.transform
-        _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies)
+        _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies,_.fill_indicies)
         _.zgraph.graph(_.xmin,_.xmax,_.ymin)
         return _.zgraph.img
 
@@ -182,15 +189,11 @@ class Viewer(Attr_menu_enabled):
                     _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
                 else:
                     _.line_endpoint_indicies = []
+                if len(_.fill_indicies_list):
+                    _.fill_indicies = _.fill_indicies_list[_.xyzs_index]
+                else:
+                    _.fill_indicies = []
             elif s[0] == '=' and _.xyzs_list:
-                """
-                _.xyzs_index += 1
-                if _.xyzs_index >= len(_.xyzs_list)-1:
-                    _.xyzs_index = len(_.xyzs_list)-1
-                    print('At end.')
-                    if dont_interact:
-                        break
-                """
                 _.xyzs_index = min(len(_.xyzs_list)-1,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
@@ -198,6 +201,10 @@ class Viewer(Attr_menu_enabled):
                     _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
                 else:
                     _.line_endpoint_indicies = []
+                if len(_.fill_indicies_list):
+                    _.fill_indicies = _.fill_indicies_list[_.xyzs_index]
+                else:
+                    _.fill_indicies = []
             else:
                 print('\tHuh?')
                 continue
@@ -215,7 +222,7 @@ class Viewer(Attr_menu_enabled):
                 xyzs_ = _.xyzs @ _.transform
             else:
                 xyzs_ = 1.0 * _.xyzs
-            _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies)
+            _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies,_.fill_indicies)
             _.zgraph.graph(_.xmin,_.xmax,_.ymin)
             _.zgraph.show()
             if MetaData is not None:
@@ -251,11 +258,15 @@ if __name__ == '__main__':
     xyzs_list = []
     color_list = []
     line_endpoint_indicies_list = []
-    xyzs = rndn(1000,3)
+    fill_indicies_list = []
+
+    
     for i in range(20):
+        xyzs = rndn(1000,3)
         xyzs_list.append(xyzs)
         color_list.append(rndint(255,size=(len(xyzs_list[0]),3)))
         line_endpoint_indicies_list.append(rndint(100,size=(30,2)))
+        fill_indicies_list.append([rndint(100,size=(3)),rndint(100,size=(3)),rndint(100,size=(3))])
     xmin,xmax,ymin = -5,5,-5
 
     v = Viewer(
@@ -265,6 +276,7 @@ if __name__ == '__main__':
         ymin=ymin,
         color_list=color_list,
         line_endpoint_indicies_list=line_endpoint_indicies_list,
+        fill_indicies_list=fill_indicies_list,
     )
 
     if False:
