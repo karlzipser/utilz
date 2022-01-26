@@ -86,16 +86,24 @@ class ZGraph:
                         x0,y0 = pixels[a][:2]
                         contour_pts.append((x0,shape(_.img)[0]-1-y0))
                     if fill_color is None:
-                        if len(pixels[a]) < 6:
-                            c = color
+                        #print(len(pixels),a)
+                        if len(pixels) < a+1:
+                            cr('warning, len(pixels) < a+1')
+                            c = (255,255,255)
                         else:
-                            c = pixels[a][3:6].tolist()
+                            if len(pixels[a]) < 6:
+                                c = color
+                            else:
+                                c = pixels[a][3:6].tolist()
                         fill_color = c
-                    cv2.fillPoly(
-                        _.img,
-                        [na(contour_pts)],
-                        color=fill_color,
-                    )
+                    try:
+                        cv2.fillPoly(
+                            _.img,
+                            [na(contour_pts)],
+                            color=fill_color,
+                        )
+                    except:
+                        cr('cv2.fillPoly failed with',contour_pts)
 
 
 
