@@ -3,6 +3,9 @@ from utilz.vis.ZGraph import *
 
 
 class ZTicker:
+    """
+    Show timeseries data
+    """
     def __init__(self, width, height, title='no-name'):
         self.title = title
         self.img = get_blank_rgb(height,width)
@@ -10,7 +13,7 @@ class ZTicker:
     def _add(self,ys,ymin,ymax,colors):
         xys = zeros((len(ys),2))
         xys[:,1] = na(ys)
-        pixels = pts2pixels(xys,(ymin,ymin),(ymax,ymax),shape(self.img))
+        pixels = self.pts2pixels(xys,(ymin,ymin),(ymax,ymax),shape(self.img))
         for p,color in zip(pixels,colors):
             #print(p)
             self.img[p[1],-1,:] = color
@@ -30,13 +33,35 @@ class ZTicker:
         mci(img_,title=self.title)
 
 
+    def pts2pixels(self,xys,xymin,xymax,shape_of_img):
+        xys = na(xys)
+        xymin = na(xymin)
+        xymax = na(xymax)
+        shape_of_img = na([shape_of_img[1],shape_of_img[0]])
+        pixels = shape_of_img * (xys-xymin)/(xymax-xymin)
+        pixels = pixels.astype(int)
+        pixels = pixels[pixels[:,0]>=0]
+        pixels = pixels[pixels[:,1]>=0]
+        pixels = pixels[pixels[:,0]<shape_of_img[0]]
+        pixels = pixels[pixels[:,1]<shape_of_img[1]]
+        return pixels
 
+def example(
+    height=200,
+    width=500,
+    step=1,
+    every=2
+):
+    """
+    The ZTicker class with an example usage.
 
+    Used to animate timeseries data.
+    """
 
-if __name__ == '__main__':
-    
-    w = ZTicker(500,200)
-    for i in range(1,10*360):
+    A = locals()
+    kprint(A)
+    w = ZTicker(width,height)
+    for i in range(1,10*360,step):
         if i > 0:
             w._shift()
         w._add(
@@ -50,9 +75,15 @@ if __name__ == '__main__':
             ],
             -2,2,
             [(255,0,0),(0,255,0),(0,0,255),(255,255,255)])
-        w.show(every=2)
+        w.show(every=every)
 
     raw_enter()
+
+
+if __name__ == '__main__':
+
+    fire.Fire(example)
+
 
 
 

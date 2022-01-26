@@ -253,8 +253,11 @@ def xyzs_to_4D(xyzs,assume_all_ones=True):
     return xyzs
 
 
-if __name__ == '__main__':
-    
+
+def example(num_pts=1000,num_indicies=100):
+    """
+    Point cloud viewer, with example.
+    """
     xyzs_list = []
     color_list = []
     line_endpoint_indicies_list = []
@@ -262,11 +265,17 @@ if __name__ == '__main__':
 
     
     for i in range(20):
-        xyzs = rndn(1000,3)
+        xyzs = rndn(num_pts,3)
         xyzs_list.append(xyzs)
         color_list.append(rndint(255,size=(len(xyzs_list[0]),3)))
-        line_endpoint_indicies_list.append(rndint(100,size=(30,2)))
-        fill_indicies_list.append([rndint(100,size=(3)),rndint(100,size=(3)),rndint(100,size=(3))])
+        line_endpoint_indicies_list.append(rndint(num_indicies,size=(30,2)))
+        fill_indicies_list.append(
+            [
+                rndint(num_indicies,size=(3)),
+                rndint(num_indicies,size=(3)),
+                rndint(num_indicies,size=(3))
+            ]
+        )
     xmin,xmax,ymin = -5,5,-5
 
     v = Viewer(
@@ -284,5 +293,10 @@ if __name__ == '__main__':
         spause()
 
     v.interactive_loop()
+
+
+
+if __name__ == '__main__':
+    fire.Fire(example)
 
 #EOF

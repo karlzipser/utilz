@@ -45,6 +45,7 @@ imports = (
     #('FROM','termcolor','cprint'),
     #('FROM','collections','namedtuple'),
     #('AS','numpy','np'),
+    'fire',
     ('FROM','copy','deepcopy'),
 )
 

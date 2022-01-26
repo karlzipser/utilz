@@ -173,7 +173,7 @@ class ZGraph:
         xmins = []
         xmaxes = []
         ymins = []
-        for xys,color,line_endpoint_indicies in _.xys_color_list:
+        for xys,color,line_endpoint_indicies,fill_indicies in _.xys_color_list:
             xmins.append(xys[:,0].min())
             xmaxes.append(xys[:,0].max())
             ymins.append(xys[:,1].min())
@@ -303,20 +303,27 @@ def pts2img(
 
 
 
+def example(egs=[0,1,2,3]):
+    """
+    The ZGraph class, with examples.
 
-if __name__ == '__main__':
+    Try running for example, 
+    python utilz/vis/ZGraph.py --egs [0,1,2,3]
+    """
+    kprint(locals())
     CA()
 
     xys=rndn(1000,2)
 
-    if False:
+    if 0 in egs:
         z0=ZGraph(100,100,title='ZGraph z0')
         z0.add(xys+na([-3,0]),rndint(255,size=(len(xys),3)))
-        z0.graph()
+        z0.graph()#-5,3,-5,3)
         z0.report()
         z0.show()
+        raw_enter();CA()
 
-    if True:
+    if 1 in egs:
         z1=ZGraph(800,400,title='ZGraph z1')
         z1.add(
             xys=2*xys*na([-1,1])+na([8,-7]),
@@ -361,21 +368,28 @@ if __name__ == '__main__':
         z1.graph(-9,9,-9,thickness=1)
         z1.show(1.)
         z1.report()
+        raw_enter();CA()
 
 
+    if 2 in egs:
+        plot_xys(xys*3+na([0.4,1.3]),img=z1.img,color=(255,127,255),width=300,height=300,xmin=-5,xmax=5,ymin=-5,aspect_ratio=1,title='using plot_xys')
+        raw_enter();CA()
 
-    if False:
-        plot_xys(xys*0.3+na([0.4,1.3]),img=z1.img,color=(30,127,0),width=300,height=300,xmin=-5,xmax=5,ymin=-5,aspect_ratio=1,title='using plot_xys')
-
-
-    if False:
-        img = get_blank_rgb(100,100)
+    if 3 in egs:
+        img = get_blank_rgb(200,200)
         xys = rndn(1000,2)
         pixels=pts2img(img,xys,-3,3,-3,1,color=rndint(256,size=(len(xys),3)))
         mci(img,title='using pts2img')
+        raw_enter();CA()
+
+    
 
 
-    raw_enter()
+
+if __name__ == '__main__':
+    fire.Fire(example)
+
+
 
 
 
