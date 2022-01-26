@@ -67,11 +67,6 @@ class ZGraph:
             _.pixels_list.append(pixels)
 
 
-
-
-                
-                
-
             if len(fill_indicies):
                 
                 for fi in fill_indicies:
@@ -90,7 +85,6 @@ class ZGraph:
                         a = valid_enpoint_indicies[j]
                         x0,y0 = pixels[a][:2]
                         contour_pts.append((x0,shape(_.img)[0]-1-y0))
-                    print(len(contour_pts))
                     if fill_color is None:
                         if len(pixels[a]) < 6:
                             c = color
@@ -105,13 +99,6 @@ class ZGraph:
 
 
 
-
-
-
-
-
-
-
             if len(line_endpoint_indicies):
                 
                 valid_enpoint_indicies = []
@@ -122,16 +109,15 @@ class ZGraph:
                     if len(si) > 0 and len(ei) > 0:
 
                         valid_enpoint_indicies.append((si[0],ei[0]))
-                        #cg((si[0],ei[0]),'is valid')
                     else:
-                        pass #cr((si,ei),'is invalid')
+                        pass
                 for j in rlen(valid_enpoint_indicies):
                     a,b = valid_enpoint_indicies[j]
                     x0,y0 = pixels[a][:2]
                     x1,y1 = pixels[b][:2]
 
                     if len(pixels[a]) < 6:
-                        c = color#[255,0,0]
+                        c = color
                     else:
                         c = pixels[a][3:6].tolist()
 
