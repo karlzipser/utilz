@@ -26,7 +26,7 @@ try:
     r = txt_file_to_list_of_strings(opjh('.screen_resolution'))
     SCREEN_RESOLUTION = (int(r[0]),int(r[1]))
 except:
-    clp("Didn't find or get data from",opjh('.screen_resolution'),'`wrb')
+    #clp("Didn't find or get data from",opjh('.screen_resolution'),'`wrb')
     try:
     #if using_osx:
         def screen_size():
