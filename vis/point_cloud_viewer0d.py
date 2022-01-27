@@ -134,7 +134,11 @@ class Viewer(Attr_menu_enabled):
         _.zgraph.graph(_.xmin,_.xmax,_.ymin)
         return _.zgraph.img
 
-    def interactive_loop(_,MetaData=None,dont_interact=False):
+    def interactive_loop(_,MetaData=None,dont_interact=False,initial_rotation=0):
+        if initial_rotation:
+            s = d2n('z',initial_rotation)
+            A = _.Transformations[s[0]](initial_rotation)
+            _.transformation_list.append( (s,A) )
         s = '='
         while True:
             #cg(_.xyzs_index)
