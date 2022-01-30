@@ -128,6 +128,34 @@ def input_to_dict(
 
 
 
+class Attr_menu_enabled():
+    def __init__(_):
+        pass
+    def attrs_to_dict(_):
+        _.Ad = {}
+        for k in _.__dict__.keys():
+            if k[0] == '_':
+                continue
+            if type(_.__dict__[k]) not in [int,float,str]:
+                continue
+            _.Ad[k] = _.__dict__[k]
+    def dict_to_attrs(_):
+        for k in _.Ad:
+            assert k in _.__dict__.keys()
+            _.__dict__[k] = _.Ad[k]
+    def geta(_):
+        return select_from_dict(_.Ad,title='\nget_attribute:')
+    def seta(_):
+        if input_to_dict(_.Ad,title='\nset_attribute:'):
+            _.dict_to_attrs()
+            return True
+        else:
+            return False
+    def showa(_):
+        print_dic_simple(_.Ad,title='(A)ttributes (d)ict')
+
+
+
 if __name__ == '__main__':
 
     D = {
