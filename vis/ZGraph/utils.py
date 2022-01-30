@@ -120,65 +120,60 @@ def get_blank_rgb(h,w):
 
 
 
-def example(height=100,width=200,n_pts=400,xmin=-3,xmax=3,ymin=-3):
+def _example(height=100,width=200,n_pts=400,xmin=-3,xmax=3,ymin=-3):
     """Test out """+__file__
 
-    exec_strs = [
 
-        (get_blank_rgb,"img = get_blank_rgb(height,width);\nprint(shape(img))"),
+    print('e.g. 1')
+    img = get_blank_rgb(height,width);
+    print(shape(img))
+    raw_enter()
 
-        (pts2pixels,
-"""q = pts2pixels(
-    xys=rndn(n_pts,2),
-    xmin=xmin,
-    xmax=xmax,
-    ymin=ymin,
-    aspect_ratio=1.0,
-    shape_of_img=(width,height,3),
-    trim=True,
-    add_indicies=True,
-    colors=z55(rndn(n_pts,3)),
-)
 
-plot(q[:,:2],'k',label='pixel xys')
-plot(q[:,2],'b',label='indicies')
-plot(q[:,-3:],'r',label='RGBs')
-plt.legend(loc="upper left")
-plt.title('pts2pixels, trim=True')
-plt.ylabel('value')
-plt.xlabel('index')
-spause()
-    """),
+    print('e.g. 2')
 
-    (pts2img,
-"""pts2img(
-    img,
-    xys=rndn(n_pts,2),
-    xmin=xmin,
-    xmax=xmax,
-    ymin=ymin,
-    aspect_ratio=1.0,
-    color=randint(256,size=(n_pts,3))
-)
-CA()
-mi(img)
-"""),
+    q = pts2pixels(
+        xys=rndn(n_pts,2),
+        xmin=xmin,
+        xmax=xmax,
+        ymin=ymin,
+        aspect_ratio=1.0,
+        shape_of_img=(width,height,3),
+        trim=True,
+        add_indicies=True,
+        colors=z55(rndn(n_pts,3)),
+    )
+
+
+    plot(q[:,:2],'k',label='pixel xys')
+    plot(q[:,2],'b',label='indicies')
+    plot(q[:,-3:],'r',label='RGBs')
+    plt.legend(loc="upper left")
+    plt.title('pts2pixels, trim=True')
+    plt.ylabel('value')
+    plt.xlabel('index')
+    spause()
+    raw_enter()
+
+
+    print('e.g. 3')
+    pts2img(
+        img,
+        xys=rndn(n_pts,2),
+        xmin=xmin,
+        xmax=xmax,
+        ymin=ymin,
+        aspect_ratio=1.0,
+        color=randint(256,size=(n_pts,3))
+    )
+
+    CA()
+    mi(img)
+    raw_enter()
     
-    ]
-
-    ctr = 0
-    for d,s in exec_strs:
-        clear_screen()
-        box(d.__doc__,' '+d.__name__+'() ')
-        box(s,' '+d2s(fname(__file__),'e.g.',str(ctr)+' '))
-        ctr += 1
-        exec(s)
-        raw_enter()
-
-
 
 if __name__ == '__main__':
-    fire.Fire(example)
+    fire.Fire(_example)
 
 
 

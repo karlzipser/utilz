@@ -4,7 +4,7 @@ print('\n',__file__,'adding',parent_path,'to sys.path.','\n')
 sys.path.append(parent_path)
 
 from utilz.vis import *
-from zgraph2.utils import *
+from ZGraph.utils import *
 
 class ZGraph:
     def __init__(
@@ -113,7 +113,6 @@ class ZGraph:
                         x0,y0 = pixels[a][:2]
                         contour_pts.append((x0,shape(_.img)[0]-1-y0))
                     if fill_color is None:
-                        #print(len(pixels),a)
                         if len(pixels) < a+1:
                             cr('warning, len(pixels) < a+1')
                             c = (255,255,255)
@@ -228,74 +227,90 @@ class ZGraph:
 
 
 
-def example(egs=[0,1,2,3]):
+def _example():
     """
     The ZGraph class, with examples.
 
     Try running for example, 
     python utilz/vis/zgraph2/zgraph.py --egs [0,1,2,3]
     """
-    kprint(locals())
+
     CA()
 
+    print('e.g. 0')
+    xys=rndn(5000,2)
+    z0=ZGraph(300,300,title='ZGraph z0')
+    z0.add(xys+na([-3,0]),rndint(255,size=(len(xys),3)))
+    z0.graph()
+    z0.report()
+    z0.show()
+    raw_enter();CA()
+
+
+    print('e.g. 1')
     xys=rndn(1000,2)
+    z1=ZGraph(600,400,title='ZGraph z1')
+    z1.add(
+        xys=2*xys*na([-1,1])+na([8,-7]),
+        color=rndint(255,size=(len(xys),3)),
+        fill_indicies=( 
+            [rndint(200,size=(10)),
+            
+            ]
+        ),
+    )
+    z1.add(
+        xys=2*xys*na([-1,1])+na([8,-7]),
+        color=rndint(255,size=(len(xys),3)),
+        fill_indicies=( 
+            [rndint(200,size=(10)),
+            rndint(200,size=(10)),
+            rndint(200,size=(10)),]
+        ),
+    )        
+    z1.add(
+        xys=1*xys*na([-1,1])+na([12,3]),
+        color=zeros((len(xys),3),np.uint8)+(255,127,31),
+        line_endpoint_indicies=rndint(400,size=(30,2)),
+    )
 
-    if 0 in egs:
-        z0=ZGraph(100,100,title='ZGraph z0')
-        z0.add(xys+na([-3,0]),rndint(255,size=(len(xys),3)))
-        z0.graph()#-5,3,-5,3)
-        z0.report()
-        z0.show()
-        raw_enter();CA()
+    z1.add(
+        xys+na([-5,4]),
+        color=(255,255,255),
+        line_endpoint_indicies=rndint(200,size=(30,2)),
 
-    if 1 in egs:
-        z1=ZGraph(800,400,title='ZGraph z1')
-        z1.add(
-            xys=2*xys*na([-1,1])+na([8,-7]),
-            color=rndint(255,size=(len(xys),3)),
-            fill_indicies=( 
-                [rndint(200,size=(10)),
-                
-                ]
-            ),
-        )
-        z1.add(
-            xys=2*xys*na([-1,1])+na([8,-7]),
-            color=rndint(255,size=(len(xys),3)),
-            fill_indicies=( 
-                [rndint(200,size=(10)),
-                rndint(200,size=(10)),
-                rndint(200,size=(10)),]
-            ),
-        )        
-        z1.add(
-            xys=1*xys*na([-1,1])+na([12,3]),
-            color=zeros((len(xys),3),np.uint8)+(255,127,31),
-            line_endpoint_indicies=rndint(400,size=(30,2)),
-        )
+    )
+    z1.add(
+        xys=na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
+        color=(0,255,0),
+        line_endpoint_indicies=((0,1),(1,2),(2,3),(3,4)),
+    )
+    z1.add(
+        xys=0.75*na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
+        color=(255,0,0),
+        fill_indicies=([[0,1,2,3,4]]),
+    )
+    z1.graph(-9,9,-9,thickness=1)
+    z1.show(1.)
+    z1.report()
+    raw_enter();CA()
 
-        z1.add(
-            xys+na([-5,4]),
-            color=(255,255,255),
-            line_endpoint_indicies=rndint(200,size=(30,2)),
-
-        )
-        z1.add(
-            xys=na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
-            color=(0,255,0),
-            line_endpoint_indicies=((0,1),(1,2),(2,3),(3,4)),
-        )
-        z1.add(
-            xys=0.75*na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
-            color=(255,0,0),
-            fill_indicies=([[0,1,2,3,4]]),
-        )
-        z1.graph(-9,9,-9,thickness=1)
-        z1.show(1.)
-        z1.report()
-        raw_enter();CA()
-
-
+    print('e.g. 2')
+    xys=rndn(20000,2)
+    z0=ZGraph(1000,1000,title='ZGraph z0')
+    t0 = 10
+    timer = Timer(t0)
+    print('wait',timer.time_s,'seconds')
+    ctr = 0
+    while not timer.rcheck():
+        z0.clear()
+        z0.add(xys+na([0,0]),rndint(255,size=(len(xys),3)))
+        z0.graph(-5,5,-5)
+        ctr += 1
+    print('rate =',dp(ctr/t0),'Hz')
+    z0.report()
+    z0.show()
+    raw_enter();CA()
 
 
     
@@ -303,7 +318,7 @@ def example(egs=[0,1,2,3]):
 
 
 if __name__ == '__main__':
-    fire.Fire(example)
+    fire.Fire(_example)
 
 
 

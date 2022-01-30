@@ -4,7 +4,7 @@ print('\n',__file__,'adding',parent_path,'to sys.path.','\n')
 sys.path.append(parent_path)
 
 from utilz.vis import *
-from zgraph2.zgraph import *
+from ZGraph.zgraph import *
 
 
 
@@ -23,8 +23,8 @@ def plot_xys(
     return_img=True,
 ):
     """
-    An x-y points plotter function built on ZGraph class
-
+    An x-y points plotter function built on ZGraph class.
+    Allows use of ZGraph without overhead of building class.
 
     """
 
@@ -51,33 +51,32 @@ def plot_xys(
 
 
 
-
-
-
-def example(egs=[0,1,2,3]):
+def _example():
     """
     The ZGraph class, with examples.
 
     Try running for example, 
     python utilz/vis/ZGraph.py --egs [0,1,2,3]
     """
-    kprint(locals())
-    CA()
+
+    print('e.g. 1')
 
     xys=rndn(1000,2)
 
-    if 2 in egs:
-        plot_xys(xys*3+na([0.4,1.3]),img=z1.img,color=(255,127,255),width=300,height=300,xmin=-5,xmax=5,ymin=-5,aspect_ratio=1,title='using plot_xys')
-        raw_enter();CA()
-
-
-
-    
+    plot_xys(
+        xys*0.5+na([0.4,1.3]),
+        (255,127,255),
+        300,
+        300,
+        title='using plot_xys'
+    )
+    spause()
+    raw_enter();CA()
 
 
 
 if __name__ == '__main__':
-    fire.Fire(example)
+    fire.Fire(_example)
 
 
 
