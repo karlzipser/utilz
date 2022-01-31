@@ -396,6 +396,9 @@ def pseudocolor(val, minval, maxval,max_angle=360):
 
 
 def pseudocolors(vals, minval, maxval,max_angle=360):
+    vals = vals.copy()
+    vals[vals < minval] = minval
+    vals[vals > maxval] = maxval
     # https://stackoverflow.com/questions/10901085/range-values-to-pseudocolor
     """ Convert val in range minval..maxval to the range 0..120 degrees which
         correspond to the colors Red and Green in the HSV colorspace.

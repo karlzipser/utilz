@@ -60,7 +60,7 @@ class Viewer(Attr_menu_enabled):
          # --find way to map output colors to correct colors
         """
 
-        box(_.help_str)
+        #box(_.help_str)
 
 
 
@@ -93,6 +93,8 @@ class Viewer(Attr_menu_enabled):
         initial_rotation_x=None,
         initial_rotation_y=None,
         initial_rotation_z=None,
+        show=True,
+        verbose=False,
     ):
         
         for val,ax in zip(
@@ -103,7 +105,8 @@ class Viewer(Attr_menu_enabled):
             ),
             ('x','y','z'),
         ):
-            cy('initial rotation:',val,ax)
+            if verbose:
+                cy('initial rotation:',val,ax)
             if not val is None:
                 s = d2n(ax,val)
                 A = _.Transformations[s[0]](val)
@@ -173,7 +176,6 @@ class Viewer(Attr_menu_enabled):
                 if _.xyzs_index < 0:
                     _.xyzs_index = 0
                     print('At begining.')
-                #_.xyzs_index = max(0,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
                 if len(_.line_endpoint_indicies_list):
@@ -222,12 +224,16 @@ class Viewer(Attr_menu_enabled):
                 xyzs_ = 1.0 * _.xyzs
             _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies,_.fill_indicies)
             _.zgraph.graph(_.xmin,_.xmax,_.ymin)
-            _.zgraph.show()
+
+            if show:
+                _.zgraph.show()
+
             if MetaData is not None:
                 MetaData['imgs'][_.xyzs_index] = 1*_.zgraph.img
 
-            if _.xyzs_index >= len(_.xyzs_list):
-                print('At end.')
+            if _.xyzs_index+1 >= len(_.xyzs_list):
+                if verbose:
+                    print('At end.')
                 if dont_interact:
                     break
             
@@ -259,91 +265,99 @@ def _example(
     initial_rotation_x=0,
     initial_rotation_y=0,
     initial_rotation_z=0,
-
+    verbose=True,
 ):
-    
-    #Point cloud viewer, with example.
-    
-    print('e.g. 1')
-    xyzs_list = []
-    color_list = []
-    line_endpoint_indicies_list = []
-    fill_indicies_list = []
+    """Point cloud viewer, with examples"""
 
-    
-    for i in range(20):
-        xyzs = rndn(num_pts,3)
-        xyzs_list.append(xyzs)
-        color_list.append(rndint(255,size=(len(xyzs_list[0]),3)))
-        line_endpoint_indicies_list.append(rndint(num_indicies,size=(30,2)))
-        fill_indicies_list.append(
-            [
-                rndint(num_indicies,size=(3)),
-                rndint(num_indicies,size=(3)),
-                rndint(num_indicies,size=(3))
-            ]
+    if 'example 1':
+        print('e.g. 1')
+        xyzs_list = []
+        color_list = []
+        line_endpoint_indicies_list = []
+        fill_indicies_list = []
+
+        
+        for i in range(20):
+            xyzs = rndn(num_pts,3)
+            xyzs_list.append(xyzs)
+            color_list.append(rndint(255,size=(len(xyzs_list[0]),3)))
+            line_endpoint_indicies_list.append(rndint(num_indicies,size=(30,2)))
+            fill_indicies_list.append(
+                [
+                    rndint(num_indicies,size=(3)),
+                    rndint(num_indicies,size=(3)),
+                    rndint(num_indicies,size=(3))
+                ]
+            )
+        xmin,xmax,ymin = -5,5,-5
+
+
+        v = Viewer(
+            xyzs_list=xyzs_list,
+            xmin=xmin,
+            xmax=xmax,
+            ymin=ymin,
+            color_list=color_list,
+            line_endpoint_indicies_list=line_endpoint_indicies_list,
+            fill_indicies_list=fill_indicies_list,
         )
-    xmin,xmax,ymin = -5,5,-5
+
+        v.interactive_loop(
+        )
 
 
-    v = Viewer(
-        xyzs_list=xyzs_list,
-        xmin=xmin,
-        xmax=xmax,
-        ymin=ymin,
-        color_list=color_list,
-        line_endpoint_indicies_list=line_endpoint_indicies_list,
-        fill_indicies_list=fill_indicies_list,
-    )
-
-    v.interactive_loop(
-    )
-
-
-    print('e.g. 2')
-
-
-    try:
-        xyzs_list = lo(opjD('sample_point_cloud_list'))
-    except:
-        print("opjD('sample_point_cloud_list.pkl') not found")
-
-    color_list = []
-    
-    for i in rlen(xyzs_list):
-        #xyzs_list[i][:,2] *= -1
-        percent(i,len(xyzs_list),title='color_list')
-        """
-        for j in rlen(xyzs_list[i]):
-            z = xyzs_list[i][j][2]
-            colors.append(  255*na(pseudocolors(z,-2,5,243))  )
-        """
-        rgbs = pseudocolors(xyzs_list[i][:,2],-1.5,1.5,243)
-        color_list.append(rgbs)
     
 
-    line_endpoint_indicies_list = []
-    fill_indicies_list = []
-    
-    xmin,xmax,ymin = -10,50,-30
+    if 'example 2':
+        print('e.g. 2')
+        try:
+            xyzs_list = lo(opjD('sample_point_cloud_list'))
+        except:
+            print("opjD('sample_point_cloud_list.pkl') not found")
+            return
 
-    v = Viewer(
-        xyzs_list=xyzs_list,
-        xmin=xmin,
-        xmax=xmax,
-        ymin=ymin,
-        img_height=1000,
-        img_width=1000,
-        color_list=color_list,
-        line_endpoint_indicies_list=line_endpoint_indicies_list,
-        fill_indicies_list=fill_indicies_list,
-    )
+        color_list = []
+        
+        for i in rlen(xyzs_list):
+            #xyzs_list[i][:,2] *= -1
+            if verbose:
+                percent(i,len(xyzs_list),title='color_list')
+            """
+            for j in rlen(xyzs_list[i]):
+                z = xyzs_list[i][j][2]
+                colors.append(  255*na(pseudocolors(z,-2,5,243))  )
+            """
+            rgbs = pseudocolors(xyzs_list[i][:,2],-1.5,1.5,243)
+            color_list.append(rgbs)
+        
 
-    v.interactive_loop(
-        initial_rotation_x=initial_rotation_x,
-        initial_rotation_y=initial_rotation_y,
-        initial_rotation_z=initial_rotation_z,
-    )
+        line_endpoint_indicies_list = []
+        fill_indicies_list = []
+        
+        xmin,xmax,ymin = -10,50,-30
+
+        MetaData = dict(
+            imgs={},
+        )
+
+        v = Viewer(
+            xyzs_list=xyzs_list,
+            xmin=xmin,
+            xmax=xmax,
+            ymin=ymin,
+            img_height=1000,
+            img_width=1000,
+            color_list=color_list,
+            line_endpoint_indicies_list=line_endpoint_indicies_list,
+            fill_indicies_list=fill_indicies_list,
+        )
+
+        v.interactive_loop(
+            initial_rotation_x=initial_rotation_x,
+            initial_rotation_y=initial_rotation_y,
+            initial_rotation_z=initial_rotation_z,
+            MetaData=MetaData,
+        )
 
 
 
