@@ -296,10 +296,90 @@ def show_color_net_inputs(camera_input,pre_metadata_features_metadata=None,chann
     return g0
 
 
+"""
+# HSV: Hue, Saturation, Value
+# H: position in the spectrum
+# S: color saturation ("purity")
+# V: color brightness
+
+# HLS: Hue, Luminance, Saturation
+# H: position in the spectrum
+# L: color lightness
+# S: color saturation
+
+def hsv_to_rgb(h, s, v):
+    if s == 0.0:
+        return v, v, v
+    i = int(h*6.0) # XXX assume int() truncates!
+    f = (h*6.0) - i
+    p = v*(1.0 - s)
+    q = v*(1.0 - s*f)
+    t = v*(1.0 - s*(1.0-f))
+    i = i%6
+    if i == 0:
+        return v, t, p
+    if i == 1:
+        return q, v, p
+    if i == 2:
+        return p, v, t
+    if i == 3:
+        return p, q, v
+    if i == 4:
+        return t, p, v
+    if i == 5:
+        return v, p, q
+"""
+
+def hsv_to_rgb__vectorized(h):
+
+    s = zeros(len(h))+1.0
+    v = zeros(len(h))+1.0
+    rgb = zeros((len(h),3))
+
+
+    i = (h*6.0).astype(int)
+    f = (h*6.0) - i
+    p = v*(1.0 - s)
+    q = v*(1.0 - s*f)
+    t = v*(1.0 - s*(1.0-f))
+
+    a = np.where(i==0)
+    if len(a[0]):
+        rgb[a,:] = na((v[a],t[a],p[a])).T
+
+
+    a = np.where(i==1)
+    if len(a[0]):
+        rgb[a,:] = na((q[a],v[a],p[a])).T
+
+
+    a = np.where(i==2)
+    if len(a[0]):
+        rgb[a,:] = na((p[a],v[a],t[a])).T
+
+
+    a = np.where(i==3)
+    if len(a[0]):
+        rgb[a,:] = na((p[a],q[a],v[a])).T
+
+
+    a = np.where(i==4)
+    if len(a[0]):
+        rgb[a,:] = na((t[a],p[a],v[a])).T
+    
+
+    a = np.where(i==5)
+    if len(a[0]):
+        rgb[a,:] = na((v[a],p[a],q[a])).T    
+    f = (h*6.0) - i
+    p = v*(1.0 - s)
+    q = v*(1.0 - s*f)
+    t = v*(1.0 - s*(1.0-f))
+    
+    return (255*rgb).astype(np.uint8)
 
 
 
-from colorsys import hsv_to_rgb
 
 def pseudocolor(val, minval, maxval,max_angle=360):
     # https://stackoverflow.com/questions/10901085/range-values-to-pseudocolor
@@ -312,5 +392,21 @@ def pseudocolor(val, minval, maxval,max_angle=360):
     # Note: hsv_to_rgb() function expects h to be in the range 0..1 not 0..360
     r, g, b = hsv_to_rgb(h/360, 1., 1.)
     return r, g, b
+
+
+
+def pseudocolors(vals, minval, maxval,max_angle=360):
+    # https://stackoverflow.com/questions/10901085/range-values-to-pseudocolor
+    """ Convert val in range minval..maxval to the range 0..120 degrees which
+        correspond to the colors Red and Green in the HSV colorspace.
+    """
+    h = (vals-minval) / (maxval-minval) * max_angle
+    ones = zeros(len(vals))+1
+    # Convert hsv color (h,1,1) to its rgb equivalent.
+    # Note: hsv_to_rgb() function expects h to be in the range 0..1 not 0..360
+    rgbs = hsv_to_rgb__vectorized(h/360)
+    return rgbs
+
+
 
 #EOF
