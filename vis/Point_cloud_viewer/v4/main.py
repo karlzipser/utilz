@@ -1,11 +1,8 @@
-# --allow for filling in of bounding box bases
-# --allow for only bounding box bases
-# --also draw separate images with centered square representing
-# height
-# --find way to map output colors to correct colors
 
 from utilz.vis import *
 from utilz.karguments.input__select__menu import *
+from utilz.vis.ZGraph.zgraph import *
+from utilz.vis.other import pseudocolors
 
 
 class Viewer(Attr_menu_enabled):
@@ -28,42 +25,17 @@ class Viewer(Attr_menu_enabled):
         assert type(line_endpoint_indicies_list) == list
         assert type(fill_indicies_list) == list
         _.xyzs_list = xyzs_list
-        _.xyzs_index = 0
-        _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
+        _.xyzs_index = -1
         _.color_list = color_list
-        _.color = _.color_list[_.xyzs_index]
         _.line_endpoint_indicies_list = line_endpoint_indicies_list
         _.fill_indicies_list = fill_indicies_list
-        if len(_.line_endpoint_indicies_list):
-            _.line_endpoint_indicies = _.line_endpoint_indicies_list[_.xyzs_index]
-        else:
-            _.line_endpoint_indicies = []
-        if len(_.fill_indicies_list):
-            _.fill_indicies = _.fill_indicies_list[_.xyzs_index]
-        else:
-            _.fill_indicies = []
         _.xmin = xmin
         _.xmax = xmax
         _.ymin = ymin
-        #_.zmax = zmax
-        #_.zmin = zmin
         _.img_width,_.img_height = img_width,img_height
         _.title = title
-        _.transform = get_IdentityMatrix()
         _.zgraph = ZGraph(_.img_width,_.img_height,_.title)
-        _.zgraph.add(1.0*_.xyzs[:,:2],_.color,_.line_endpoint_indicies,_.fill_indicies)
-        _.zgraph.graph(_.xmin,_.xmax,_.ymin)
-        _.zgraph.show()
         _.transformation_list = []
-        _.good_transforms = [
-
-          na([[  1.12012796,   0.26691821,  -0.96128457,   0.        ],
-           [ -0.99669454,   0.36276714,  -1.06066017,   0.        ],
-           [  0.04374197,   1.43078813,   0.44825436,   0.        ],
-           [-33.60383872,  -8.00754616,  28.83853719,   1.        ]]),
-
-        ]
-        _.transform = _.good_transforms[-1]
         _.help_str = """'h' : help
          u : undo last transformation
          x<float> : rotate along x axis <float> degrees
@@ -76,12 +48,22 @@ class Viewer(Attr_menu_enabled):
          l : show transformation_list
          - : back in point cloud list
          = : forward in point cloud list
+         m : attribute menu
+
+         # To Do:
          # change xymin,xymax
          # allow running from commandline with point cloud file
          # path, cloud index
          # plot size as argument
+         # --also draw separate images with centered square representing
+         # height
+         # --find way to map output colors to correct colors
         """
-        box(_.help_str)
+
+        #box(_.help_str)
+
+
+
         _.Transformations = {
             'x' : get_xRotationMatrix,
             'y' : get_yRotationMatrix,
@@ -91,14 +73,8 @@ class Viewer(Attr_menu_enabled):
             'r' : get_yTranslationMatrix,
             't' : get_zTranslationMatrix,
         }
+
         _.attrs_to_dict()
-    """
-    def attributes_to_dict(lst):
-        U = {}
-        for name in lst:
-            U[name] = getattr(_,name)
-        return U
-    """
 
 
 
@@ -108,41 +84,71 @@ class Viewer(Attr_menu_enabled):
         _.zgraph.graph(_.xmin,_.xmax,_.ymin)
         return _.zgraph.img
 
-    def interactive_loop(_,MetaData=None,dont_interact=False,initial_rotation=0,initial_tilt=0):
 
-        if initial_rotation:
-            s = d2n('z',initial_rotation)
-            A = _.Transformations[s[0]](initial_rotation)
-            _.transformation_list.append( (s,A) )
-        if initial_tilt:
-            s = d2n('y',initial_tilt)
-            A = _.Transformations[s[0]](initial_tilt)
-            _.transformation_list.append( (s,A) )
-        print(_.transformation_list)
-        raw_enter()
-        s = '='
+
+    def interactive_loop(
+        _,
+        MetaData=None,
+        dont_interact=False,
+        initial_rotation_x=None,
+        initial_rotation_y=None,
+        initial_rotation_z=None,
+        show=True,
+        verbose=False,
+    ):
+        
+        for val,ax in zip(
+            (
+                initial_rotation_x,
+                initial_rotation_y,
+                initial_rotation_z,
+            ),
+            ('x','y','z'),
+        ):
+            if verbose:
+                cy('initial rotation:',val,ax)
+            if not val is None:
+                s = d2n(ax,val)
+                A = _.Transformations[s[0]](val)
+                _.transformation_list.append( (s,A) )
+
+
+
+        ctr = 0
+
         while True:
-            #cg(_.xyzs_index)
+
+            if ctr == 0:
+                s = '='
+            else:
+                if not dont_interact:
+                    s = input(d2s(_.xyzs_index,'command >> '))
+            ctr += 1
+
             A = None
+
             undo = False
-            s_prev = s
-            if not dont_interact:
-                s = input('command > ')
-            #print(qtds(s),len(s))
+
             if s == '':
                 s = s_prev
+            else:
+                s_prev = s
 
             if s == 'q':
                 break
+
             if not s:
                 continue
+
             if s[0] == 'h':
                 box(_.help_str)
+
             elif s == 'm':
                 print('hit enter to exit menu')
                 while _.seta():
                     pass
-                _.zgraph = _.zgraph = ZGraph(_.img_width,_.img_height,_.title)
+                _.zgraph = _.zgraph = zgraph(_.img_width,_.img_height,_.title)
+
             elif s[0] in _.Transformations.keys() and len(s) > 1:
                 value = s[1:]
                 if str_is_float(value):
@@ -152,22 +158,24 @@ class Viewer(Attr_menu_enabled):
                 else:
                     cE(qtds(value),'not float')
                     continue
+
             elif s[0] == 'u':
                 undo = True
                 if len(_.transformation_list):
                     print('undo',_.transformation_list[-1][0])
                 else:
                     print('\tTransformation_list is empty.')
+
             elif s[0] == 'l':
                 print('transformation_list:')
                 for a in _.transformation_list:
                     print(a[0],'\n',a[1])
-            elif s[0] == '-' and _.xyzs_list:
+
+            elif s[0] == '-' and len(_.xyzs_list):
                 _.xyzs_index -= 1
                 if _.xyzs_index < 0:
                     _.xyzs_index = 0
                     print('At begining.')
-                #_.xyzs_index = max(0,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
                 if len(_.line_endpoint_indicies_list):
@@ -178,7 +186,9 @@ class Viewer(Attr_menu_enabled):
                     _.fill_indicies = _.fill_indicies_list[_.xyzs_index]
                 else:
                     _.fill_indicies = []
-            elif s[0] == '=' and _.xyzs_list:
+
+            elif s[0] == '=' and len(_.xyzs_list):
+                _.xyzs_index += 1
                 _.xyzs_index = min(len(_.xyzs_list)-1,_.xyzs_index)
                 _.xyzs = xyzs_to_4D(_.xyzs_list[_.xyzs_index])
                 _.color = _.color_list[_.xyzs_index]
@@ -190,12 +200,16 @@ class Viewer(Attr_menu_enabled):
                     _.fill_indicies = _.fill_indicies_list[_.xyzs_index]
                 else:
                     _.fill_indicies = []
+
             else:
                 print('\tHuh?')
                 continue
+
             _.zgraph.clear()
+
             if not is_None(A):
                 _.transformation_list.append( (s,A) )
+
             if len(_.transformation_list):
                 B = _.transformation_list[0][1]
                 if undo:
@@ -205,20 +219,26 @@ class Viewer(Attr_menu_enabled):
                         B = B @ C[1]
                 _.transform = B
                 xyzs_ = _.xyzs @ _.transform
+
             else:
                 xyzs_ = 1.0 * _.xyzs
             _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies,_.fill_indicies)
             _.zgraph.graph(_.xmin,_.xmax,_.ymin)
-            _.zgraph.show()
+
+            if show:
+                _.zgraph.show()
+
             if MetaData is not None:
                 MetaData['imgs'][_.xyzs_index] = 1*_.zgraph.img
-            if s[0] == '=' and _.xyzs_list:
-                _.xyzs_index += 1
-                if _.xyzs_index >= len(_.xyzs_list):
-                    _.xyzs_index = len(_.xyzs_list)
+
+            if _.xyzs_index+1 >= len(_.xyzs_list):
+                if verbose:
                     print('At end.')
-                    if dont_interact:
-                        break
+                if dont_interact:
+                    break
+            
+
+
 
 
 
@@ -239,49 +259,109 @@ def xyzs_to_4D(xyzs,assume_all_ones=True):
 
 
 
-def example(num_pts=1000,num_indicies=100):
-    """
-    Point cloud viewer, with example.
-    """
-    xyzs_list = []
-    color_list = []
-    line_endpoint_indicies_list = []
-    fill_indicies_list = []
+def _example(
+    num_pts=1000,
+    num_indicies=100,
+    initial_rotation_x=0,
+    initial_rotation_y=0,
+    initial_rotation_z=0,
+    verbose=True,
+):
+    """Point cloud viewer, with examples"""
+
+    if 'example 1':
+        print('e.g. 1')
+        xyzs_list = []
+        color_list = []
+        line_endpoint_indicies_list = []
+        fill_indicies_list = []
+
+        
+        for i in range(20):
+            xyzs = rndn(num_pts,3)
+            xyzs_list.append(xyzs)
+            color_list.append(rndint(255,size=(len(xyzs_list[0]),3)))
+            line_endpoint_indicies_list.append(rndint(num_indicies,size=(30,2)))
+            fill_indicies_list.append(
+                [
+                    rndint(num_indicies,size=(3)),
+                    rndint(num_indicies,size=(3)),
+                    rndint(num_indicies,size=(3))
+                ]
+            )
+        xmin,xmax,ymin = -5,5,-5
+
+
+        v = Viewer(
+            xyzs_list=xyzs_list,
+            xmin=xmin,
+            xmax=xmax,
+            ymin=ymin,
+            color_list=color_list,
+            line_endpoint_indicies_list=line_endpoint_indicies_list,
+            fill_indicies_list=fill_indicies_list,
+        )
+
+        v.interactive_loop(
+        )
+
 
     
-    for i in range(20):
-        xyzs = rndn(num_pts,3)
-        xyzs_list.append(xyzs)
-        color_list.append(rndint(255,size=(len(xyzs_list[0]),3)))
-        line_endpoint_indicies_list.append(rndint(num_indicies,size=(30,2)))
-        fill_indicies_list.append(
-            [
-                rndint(num_indicies,size=(3)),
-                rndint(num_indicies,size=(3)),
-                rndint(num_indicies,size=(3))
-            ]
+
+    if 'example 2':
+        print('e.g. 2')
+        try:
+            xyzs_list = lo(opjD('sample_point_cloud_list'))
+        except:
+            print("opjD('sample_point_cloud_list.pkl') not found")
+            return
+
+        color_list = []
+        
+        for i in rlen(xyzs_list):
+            #xyzs_list[i][:,2] *= -1
+            if verbose:
+                percent(i,len(xyzs_list),title='color_list')
+            """
+            for j in rlen(xyzs_list[i]):
+                z = xyzs_list[i][j][2]
+                colors.append(  255*na(pseudocolors(z,-2,5,243))  )
+            """
+            rgbs = pseudocolors(xyzs_list[i][:,2],-1.5,1.5,243)
+            color_list.append(rgbs)
+        
+
+        line_endpoint_indicies_list = []
+        fill_indicies_list = []
+        
+        xmin,xmax,ymin = -10,50,-30
+
+        MetaData = dict(
+            imgs={},
         )
-    xmin,xmax,ymin = -5,5,-5
 
-    v = Viewer(
-        xyzs_list=xyzs_list,
-        xmin=xmin,
-        xmax=xmax,
-        ymin=ymin,
-        color_list=color_list,
-        line_endpoint_indicies_list=line_endpoint_indicies_list,
-        fill_indicies_list=fill_indicies_list,
-    )
+        v = Viewer(
+            xyzs_list=xyzs_list,
+            xmin=xmin,
+            xmax=xmax,
+            ymin=ymin,
+            img_height=1000,
+            img_width=1000,
+            color_list=color_list,
+            line_endpoint_indicies_list=line_endpoint_indicies_list,
+            fill_indicies_list=fill_indicies_list,
+        )
 
-    if False:
-        mi(v.get_img(),'img')
-        spause()
-
-    v.interactive_loop()
+        v.interactive_loop(
+            initial_rotation_x=initial_rotation_x,
+            initial_rotation_y=initial_rotation_y,
+            initial_rotation_z=initial_rotation_z,
+            MetaData=MetaData,
+        )
 
 
 
 if __name__ == '__main__':
-    fire.Fire(example)
+    fire.Fire(_example)
 
 #EOF
