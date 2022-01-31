@@ -93,6 +93,8 @@ class Viewer(Attr_menu_enabled):
         initial_rotation_x=None,
         initial_rotation_y=None,
         initial_rotation_z=None,
+        initial_scale=None,
+        initial_z_offset=None,
         show=True,
         verbose=False,
     ):
