@@ -90,11 +90,10 @@ class Viewer(Attr_menu_enabled):
         _,
         MetaData=None,
         dont_interact=False,
-        initial_rotation_x=None,
-        initial_rotation_y=None,
-        initial_rotation_z=None,
-        initial_scale=None,
-        initial_z_offset=None,
+        initial_rotation_x=0,
+        initial_rotation_y=0,
+        initial_rotation_z=0,
+        initial_scale=1.0,
         show=True,
         verbose=False,
     ):
@@ -113,7 +112,7 @@ class Viewer(Attr_menu_enabled):
                 s = d2n(ax,val)
                 A = _.Transformations[s[0]](val)
                 _.transformation_list.append( (s,A) )
-
+        _.transformation_list.append( ('s?',_.Transformations['s'](initial_scale)) )
 
 
         ctr = 0
@@ -266,7 +265,8 @@ def _example(
     num_indicies=100,
     initial_rotation_x=0,
     initial_rotation_y=0,
-    initial_rotation_z=0,
+    initial_rotation_z=-45,
+    initial_scale=0.25,
     verbose=True,
 ):
     """Point cloud viewer, with examples"""
@@ -358,6 +358,7 @@ def _example(
             initial_rotation_x=initial_rotation_x,
             initial_rotation_y=initial_rotation_y,
             initial_rotation_z=initial_rotation_z,
+            initial_scale=initial_scale,
             MetaData=MetaData,
         )
 
