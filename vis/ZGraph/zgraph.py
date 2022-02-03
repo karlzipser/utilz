@@ -90,7 +90,7 @@ class ZGraph:
         _.graph_has_been_called = True
 
         for xys, color, line_endpoint_indicies, fill_indicies in _.xys_color_list:
-            pixels = pts2img( _.img, xys, _.xmin, _.xmax, _.ymin, _.aspect_ratio,color )
+            pixels,untrimmed_pixels = pts2img( _.img, xys, _.xmin, _.xmax, _.ymin, _.aspect_ratio,color )
             _.pixels_list.append(pixels)
 
 
@@ -161,6 +161,7 @@ class ZGraph:
                         thickness=thickness,
                     )
 
+        return pixels,untrimmed_pixels
                     
                     
     def show(_,scale=1.0):

@@ -224,13 +224,21 @@ class Viewer(Attr_menu_enabled):
             else:
                 xyzs_ = 1.0 * _.xyzs
             _.zgraph.add(xyzs_[:,:2],_.color,_.line_endpoint_indicies,_.fill_indicies)
-            _.zgraph.graph(_.xmin,_.xmax,_.ymin)
+            
+            pixels,untrimmed_pixels = _.zgraph.graph(_.xmin,_.xmax,_.ymin)
+            #cm(type(pixels),r=1)
 
             if show:
                 _.zgraph.show()
 
             if MetaData is not None:
-                MetaData['imgs'][_.xyzs_index] = 1*_.zgraph.img
+                MetaData['imgs'][_.xyzs_index] = 1.0*_.zgraph.img
+                MetaData['xyzs'][_.xyzs_index] = 1.0*_.xyzs_list[_.xyzs_index]
+                MetaData['fill'][_.xyzs_index] = _.fill_indicies.copy()
+                MetaData['pixels'][_.xyzs_index] = {}
+                for i in rlen(untrimmed_pixels):
+                    MetaData['pixels'][_.xyzs_index][i] = untrimmed_pixels[i]
+                assert len(MetaData['pixels'][_.xyzs_index]) == len(MetaData['xyzs'][_.xyzs_index])
 
             if _.xyzs_index+1 >= len(_.xyzs_list):
                 if verbose:
@@ -265,8 +273,8 @@ def _example(
     num_indicies=100,
     initial_rotation_x=0,
     initial_rotation_y=0,
-    initial_rotation_z=-45,
-    initial_scale=0.25,
+    initial_rotation_z=0,
+    initial_scale=1,
     verbose=True,
 ):
     """Point cloud viewer, with examples"""
@@ -340,6 +348,9 @@ def _example(
 
         MetaData = dict(
             imgs={},
+            xyzs={},
+            fill={},
+            pixels={},
         )
 
         v = Viewer(

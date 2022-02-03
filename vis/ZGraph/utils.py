@@ -28,7 +28,7 @@ def pts2img(
         colors = None
     else:
         colors = color
-    pixels = pts2pixels(
+    pixels,untrimmed_pixels = pts2pixels(
         xys,
         xmin,
         xmax,
@@ -41,7 +41,7 @@ def pts2img(
         img[shape(img)[0]-1-pixels[:,1],pixels[:,0]] = color
     else:
         img[shape(img)[0]-1-pixels[:,1],pixels[:,0],:] = pixels[:,-3:]
-    return pixels
+    return pixels,untrimmed_pixels
 
 
 
@@ -82,6 +82,7 @@ def pts2pixels(
     pixels = min(shape_of_img[:2]) * (xys-xymin)/(xymax-xymin)
     assert len(pixels[:,0]) >= 2
     pixels = pixels.astype(int)
+    untrimmed_pixels = pixels.copy()
 
     new_columns = 0
     if add_indicies:
@@ -105,7 +106,7 @@ def pts2pixels(
         pixels = pixels[pixels[:,0]<shape_of_img[1]]
         pixels = pixels[pixels[:,1]<shape_of_img[0]]
 
-    return pixels
+    return pixels,untrimmed_pixels
 
 
 
