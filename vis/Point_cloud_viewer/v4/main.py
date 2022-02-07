@@ -96,6 +96,7 @@ class Viewer(Attr_menu_enabled):
         initial_scale=1.0,
         show=True,
         verbose=False,
+        scale=1.0,
     ):
         
         for val,ax in zip(
@@ -148,7 +149,7 @@ class Viewer(Attr_menu_enabled):
                 print('hit enter to exit menu')
                 while _.seta():
                     pass
-                _.zgraph = _.zgraph = zgraph(_.img_width,_.img_height,_.title)
+                _.zgraph = zgraph(_.img_width,_.img_height,_.title)
 
             elif s[0] in _.Transformations.keys() and len(s) > 1:
                 value = s[1:]
@@ -229,7 +230,7 @@ class Viewer(Attr_menu_enabled):
             #cm(type(pixels),r=1)
 
             if show:
-                _.zgraph.show()
+                _.zgraph.show(scale)
 
             if MetaData is not None:
                 MetaData['imgs'][_.xyzs_index] = 1.0*_.zgraph.img

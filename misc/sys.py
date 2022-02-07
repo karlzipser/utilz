@@ -353,6 +353,13 @@ def link_copy_dir(path,links_path):
 
 
 
+def log_cmd(_file_,name='cmd_log.txt'):
+    try:
+        with open(opj(pname(_file_),name), 'r') as original: data = original.read()
+    except:
+        data = ''
+    new_data = d2n('# ',time_str('Pretty2'),'\n\n','python ',' '.join(sys.argv),'\n\n').replace('--','\n    --')
+    with open(opj(pname(_file_),name), 'w') as modified: modified.write(new_data + data)
 
 
 
