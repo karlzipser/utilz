@@ -160,6 +160,8 @@ class ZGraph:
                         color=c,
                         thickness=thickness,
                     )
+            #pixels,untrimmed_pixels = pts2img( _.img, xys, _.xmin, _.xmax, _.ymin, _.aspect_ratio,color )
+            #_.pixels_list.append(pixels)
 
         return pixels,untrimmed_pixels
                     
