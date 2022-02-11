@@ -4,9 +4,9 @@ print('\n',__file__,'adding',parent_path,'to sys.path.','\n')
 sys.path.append(parent_path)
 
 from utilz.vis import *
-from utils import *
+from zgraph.utils import *
 
-class ZGraph:
+class ZGraph2d:
     def __init__(
         _,
         width=400,
@@ -28,8 +28,8 @@ class ZGraph:
     def add(
         _,
         xys,
-        mode='points',
         color=((255,255,255)),
+        mode='points',
     ):
         _.xys_color_mode_list.append((na(xys),color,mode))
 
@@ -136,13 +136,14 @@ def _example():
 
     print('e.g. 0')
     xys=rndn(5000,2)
-    z0=ZGraph(
+    z0=ZGraph2d(
         300,
         300,
-        title='ZGraph z0')
-    z0.add(rndn(10,2),color=((255,0,255)),mode='line')
+        title='ZGraph2d z0')
     z0.add(rndn(10,2),color=((0,255,0)),mode='fill')
     z0.add(xys+na([-2,0]),color=rndint(255,size=(len(xys),3)),mode='points')
+    z0.add(rndn(10,2),color=((0,0,255)),mode='line')
+
 
     z0.graph(
         xmin=-5,

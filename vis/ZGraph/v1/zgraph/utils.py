@@ -97,7 +97,7 @@ def pts2pixels(
         pixels[:,2] = rlen(pixels)
 
     if not colors is None:
-        cb(len(colors),len(pixels))
+        #cb(len(colors),len(pixels))
         assert len(colors) == len(pixels)
         pixels[:,-3:] = 1*colors
 

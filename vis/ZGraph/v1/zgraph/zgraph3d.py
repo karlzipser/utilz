@@ -1,11 +1,15 @@
+import sys,os
+parent_path = '/'.join(__file__.split('/')[:-2])
+print('\n',__file__,'adding',parent_path,'to sys.path.','\n')
+sys.path.append(parent_path)
 
 from utilz.vis import *
 from utilz.karguments.input__select__menu import *
-from utilz.vis.ZGraph.v1.zgraph.main import *
+from zgraph.zgraph2d import *
 from utilz.vis.other import pseudocolors
 
 
-class Viewer(Attr_menu_enabled):
+class ZGraph3d(Attr_menu_enabled):
     def __init__(
         _,
         img_width=300,
@@ -14,8 +18,7 @@ class Viewer(Attr_menu_enabled):
     ):
         Attr_menu_enabled.__init__(_)
         _.xyzs_color_mode_list = []
-        _.zgraph = ZGraph(img_width,img_height,title)
-
+        _.zgraph = ZGraph2d(img_width,img_height,title)
 
         _.Transformations = {
             'x' : get_xRotationMatrix,
@@ -46,7 +49,6 @@ class Viewer(Attr_menu_enabled):
         ymin=-5,
         transform=None,
     ):
-        
         _.zgraph.clear()
 
         for xyzs, color, mode in _.xyzs_color_mode_list:
@@ -59,10 +61,8 @@ class Viewer(Attr_menu_enabled):
 
                 xyzs = 1.0 * xyzs
 
-            cg(shape(xyzs[:,:2]),shape(color))
-
             _.zgraph.add( xyzs[:,:2], color, mode )
-        
+
         pixels, untrimmed_pixels = _.zgraph.graph( xmin, xmax, ymin )
 
         return pixels, untrimmed_pixels
@@ -75,7 +75,6 @@ class Viewer(Attr_menu_enabled):
 
 
             
-
 
 
 
@@ -93,6 +92,7 @@ def _example(
 
     if 'example 1':
         print('e.g. 1')
+        """
         xyzs_list = []
         color_list = []
         line_endpoint_indicies_list = []
@@ -112,18 +112,14 @@ def _example(
                 ]
             )
         xmin,xmax,ymin = -5,5,-5
-
-
-        v = Viewer()
-        v.add(rndn(100,3),color=randint(255,size=(100,3)))
+        """
+        xyzs = rndn(1000,4)
+        v = ZGraph3d()
+        v.add(xyzs,color=rndint(255,size=(len(xyzs),3)),mode='points')
         v.graph()
         v.show()
 
         raw_enter()
-
-
-
-    
 
 
 
