@@ -15,6 +15,15 @@ except:
 
 
 
+def get_blank_rgb(h,w):
+    """Generate a blank RGB image
+
+    Keyword arguments:
+    h -- height, pixels
+    w -- width, pixels
+    """
+    return np.zeros((h,w,3),np.uint8)
+
 
 try:
     def function_close_all_windows():
