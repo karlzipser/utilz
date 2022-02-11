@@ -4,7 +4,7 @@ print('\n',__file__,'adding',parent_path,'to sys.path.','\n')
 sys.path.append(parent_path)
 
 from utilz.vis import *
-from ZGraph.utils import *
+from utils import *
 
 class ZGraph:
     def __init__(
@@ -13,30 +13,25 @@ class ZGraph:
         height=400,
         title='ZGraph'
     ):
-        """
-        """
         _.title = title
         _.width = width
         _.height = height
         _.img = get_blank_rgb(height,width)
-        _.xys_color_list = []
-
+        _.xys_color_mode_list = []
         _.graph_has_been_called = False
         _.xmin = None
         _.xmax = None
         _.ymin = None
         _.ymax = None
         _.aspect_ratio = 1.0
-        _.pixels_list = []
-        _.modes = ['point','line','fill']
 
     def add(
         _,
         xys,
-        mode=_.modes[0]
+        mode='points',
         color=((255,255,255)),
     ):
-        _.xys_color_list.append((na(xys),color,mode))
+        _.xys_color_mode_list.append((na(xys),color,mode))
 
 
     def graph(
@@ -57,22 +52,34 @@ class ZGraph:
 
         _.graph_has_been_called = True
 
-        for xys, color, mode _.xys_color_list:
-            pixels,untrimmed_pixels = pts2img( _.img, xys, _.xmin, _.xmax, _.ymin, _.aspect_ratio, color )
-            _.pixels_list.append(pixels)
+        for xys, color, mode in _.xys_color_mode_list:
 
+            pixels, untrimmed_pixels = pts2img( _.img, xys, _.xmin, _.xmax, _.ymin, _.aspect_ratio, color )
+            cm(pixels)
+            print(shape(pixels))
             if mode == 'fill':
-                cv2.fillPoly(
-                    _.img,
-                    xys,
-                    color=color[0,
-                )
+                cy(pixels[:,:2])
+                cy(color)
+                cg(color)
+
+                contours = np.array([[50,50], [50,150], [150,150], [150,50]])
+                image = np.zeros((200,200))
+                cv2.fillPoly(_.img, pts = [pixels[:,:2]], color =(255,255,255))
+                #cv2.imshow("filledPolygon", image)
+                #cv2.fillPoly(
+                #    _.img,
+                #    pts = (np.array([[50,50], [50,150], [150,150], [150,50]])),#pixels[:,:2],
+                #    color =(255,255,255)#color=color,
+                #)
 
             elif mode == 'line':
-                cv2.drawContours(_.img,[xys],-1,color[0])
+                cv2.drawContours(_.img,[pixels[:,:2]],-1,color[0])
+
+            elif mode == 'points':
+                print('points')#_.img[pixels[:,:2]] = color[0]
 
             else:
-                _.img[xys] = color
+                assert False
 
         return pixels,untrimmed_pixels
                     
@@ -97,7 +104,7 @@ class ZGraph:
         Clear x-y data and zero image without reallocating it.
         """
         _.graph_has_been_called = False
-        _.xys_color_list = []
+        _.xys_color_mode_list = []
         _.img *= 0
         
 
@@ -108,7 +115,7 @@ class ZGraph:
         xmins = []
         xmaxes = []
         ymins = []
-        for xys,color,line_endpoint_indicies,fill_indicies in _.xys_color_list:
+        for xys,color,mode in _.xys_color_mode_list:
             xmins.append(xys[:,0].min())
             xmaxes.append(xys[:,0].max())
             ymins.append(xys[:,1].min())
@@ -140,14 +147,23 @@ def _example():
 
     print('e.g. 0')
     xys=rndn(5000,2)
-    z0=ZGraph(300,300,title='ZGraph z0')
-    z0.add(xys+na([-3,0]),rndint(255,size=(len(xys),3)))
-    z0.graph()
-    z0.report()
+    z0=ZGraph(
+        300,
+        300,
+        title='ZGraph z0')
+    z0.add(rndn(10,2),color=((255,0,0)),mode='line')
+    z0.add(rndn(10,2),color=((255,0,0)),mode='fill')
+    z0.add(xys+na([-2,0]),color=rndint(255,size=(len(xys),3)),mode='points')
+
+    z0.graph(
+        xmin=-5,
+        xmax=5,
+        ymin=-5,
+    )
     z0.show()
     raw_enter();CA()
 
-
+    """
     print('e.g. 1')
     xys=rndn(1000,2)
     z1=ZGraph(600,400,title='ZGraph z1')
@@ -212,7 +228,7 @@ def _example():
     z0.report()
     z0.show()
     raw_enter();CA()
-
+    """
 
     
 
