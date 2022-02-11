@@ -12,14 +12,12 @@ from utilz.vis.other import pseudocolors
 class ZGraph3d(Attr_menu_enabled):
     def __init__(
         _,
-        img_width=300,
-        img_height=300,
-        title='Viewer',
+        width=400,
+        height=400,
+        title='ZGraph3d'
     ):
-        Attr_menu_enabled.__init__(_)
         _.xyzs_color_mode_list = []
-        _.zgraph = ZGraph2d(img_width,img_height,title)
-        _.attrs_to_dict()
+        _.zgraph = ZGraph2d(width,height,title)
 
 
     def add(
