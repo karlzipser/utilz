@@ -55,28 +55,17 @@ class ZGraph:
         for xys, color, mode in _.xys_color_mode_list:
 
             pixels, untrimmed_pixels = pts2img( _.img, xys, _.xmin, _.xmax, _.ymin, _.aspect_ratio, color )
-            cm(pixels)
-            print(shape(pixels))
-            if mode == 'fill':
-                cy(pixels[:,:2])
-                cy(color)
-                cg(color)
 
+            if mode == 'fill':
                 contours = np.array([[50,50], [50,150], [150,150], [150,50]])
                 image = np.zeros((200,200))
-                cv2.fillPoly(_.img, pts = [pixels[:,:2]], color =(255,255,255))
-                #cv2.imshow("filledPolygon", image)
-                #cv2.fillPoly(
-                #    _.img,
-                #    pts = (np.array([[50,50], [50,150], [150,150], [150,50]])),#pixels[:,:2],
-                #    color =(255,255,255)#color=color,
-                #)
+                cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=color)
 
             elif mode == 'line':
-                cv2.drawContours(_.img,[pixels[:,:2]],-1,color[0])
+                cv2.drawContours(_.img,[pixels[:,:2]],-1,color=color)
 
             elif mode == 'points':
-                print('points')#_.img[pixels[:,:2]] = color[0]
+                pass#print('points')
 
             else:
                 assert False
@@ -137,10 +126,10 @@ class ZGraph:
 
 def _example():
     """
-    The ZGraph class, with examples.
+    The ZGraph class, with example.
 
     Try running for example, 
-    python utilz/vis/zgraph2/zgraph.py --egs [0,1,2,3]
+    python utilz/vis/ZGraph/v1/zgraph.py 
     """
 
     CA()
@@ -151,8 +140,8 @@ def _example():
         300,
         300,
         title='ZGraph z0')
-    z0.add(rndn(10,2),color=((255,0,0)),mode='line')
-    z0.add(rndn(10,2),color=((255,0,0)),mode='fill')
+    z0.add(rndn(10,2),color=((255,0,255)),mode='line')
+    z0.add(rndn(10,2),color=((0,255,0)),mode='fill')
     z0.add(xys+na([-2,0]),color=rndint(255,size=(len(xys),3)),mode='points')
 
     z0.graph(
