@@ -11,63 +11,57 @@ class ZGraph2d:
         _,
         width=400,
         height=400,
-        title='ZGraph'
+        title='ZGraph2d'
     ):
         _.title = title
         _.width = width
         _.height = height
         _.img = get_blank_rgb(height,width)
         _.xys_color_mode_list = []
-        _.graph_has_been_called = False
-        _.xmin = None
-        _.xmax = None
-        _.ymin = None
-        _.ymax = None
-        _.aspect_ratio = 1.0
+
 
     def add(
         _,
         xys,
-        color=((255,255,255)),
+        colors=((255,255,255),),
         mode='points',
     ):
-        _.xys_color_mode_list.append((na(xys),color,mode))
+        _.xys_color_mode_list.append( ( na(xys), colors, mode ) )
 
 
     def graph(
         _,
-        xmin=None,
-        xmax=None,
-        ymin=None,
+        xmin=-5,
+        xmax=5,
+        ymin=-5,
         aspect_ratio=1.0,
-        thickness=1,
     ):
-        if None not in [xmin,xmax,ymin]:
-            _.xmin = xmin
-            _.xmax = xmax
-            _.ymin = ymin
-            _.aspect_ratio = aspect_ratio
-        else:
-            _._find_min_max()
 
         _.graph_has_been_called = True
 
-        for xys, color, mode in _.xys_color_mode_list:
+        for xys, colors, mode in _.xys_color_mode_list:
 
-            pixels, untrimmed_pixels = pts2img( _.img, xys, _.xmin, _.xmax, _.ymin, _.aspect_ratio, color )
+            pixels, untrimmed_pixels = pts2img( 
+                _.img, 
+                xys, 
+                xmin, 
+                xmax, 
+                ymin, 
+                aspect_ratio, 
+                colors,
+            )
 
             if mode == 'fill':
-                contours = np.array([[50,50], [50,150], [150,150], [150,50]])
-                image = np.zeros((200,200))
-                cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=color)
+                cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=colors[0])
 
             elif mode == 'line':
-                cv2.drawContours(_.img,[pixels[:,:2]],-1,color=color)
+                cv2.drawContours(_.img,[pixels[:,:2]],-1,color=colors[0])
 
             elif mode == 'points':
-                pass#print('points')
+                pass
 
             else:
+                print('unknown mode',mode)
                 assert False
 
         return pixels,untrimmed_pixels
@@ -78,8 +72,6 @@ class ZGraph2d:
         Display image using cv2.
         """
         scale = float(scale)
-        if not _.graph_has_been_called:
-            cE('warning, ZGraph.graph() not called before ZGraph.show()')
         if scale != 1.0:
             img_ = zresize(_.img,scale)
         else:
@@ -92,28 +84,11 @@ class ZGraph2d:
         """
         Clear x-y data and zero image without reallocating it.
         """
-        _.graph_has_been_called = False
         _.xys_color_mode_list = []
         _.img *= 0
         
 
-    def _find_min_max(_,aspect_ratio_one=True):
-        """
-        If xy min and maxes not provided, find them automatically.
-        """
-        xmins = []
-        xmaxes = []
-        ymins = []
-        for xys,color,mode in _.xys_color_mode_list:
-            xmins.append(xys[:,0].min())
-            xmaxes.append(xys[:,0].max())
-            ymins.append(xys[:,1].min())
-        if is_None(_.xmin):
-            _.xmin = min(xmins)
-        if is_None(_.xmax):
-            _.xmax = max(xmaxes)
-        if is_None(_.ymin):
-            _.ymin = min(ymins)
+
 
 
 
@@ -140,9 +115,9 @@ def _example():
         300,
         300,
         title='ZGraph2d z0')
-    z0.add(rndn(10,2),color=((0,255,0)),mode='fill')
-    z0.add(xys+na([-2,0]),color=rndint(255,size=(len(xys),3)),mode='points')
-    z0.add(rndn(10,2),color=((0,0,255)),mode='line')
+    z0.add(rndn(10,2),colors=((0,255,0),),mode='fill')
+    z0.add(xys+na([-2,0]),colors=rndint(255,size=(len(xys),3)),mode='points')
+    z0.add(rndn(10,2),colors=((0,0,255),),mode='line')
 
 
     z0.graph(
@@ -159,7 +134,7 @@ def _example():
     z1=ZGraph(600,400,title='ZGraph z1')
     z1.add(
         xys=2*xys*na([-1,1])+na([8,-7]),
-        color=rndint(255,size=(len(xys),3)),
+        colors=rndint(255,size=(len(xys),3)),
         fill_indicies=( 
             [rndint(200,size=(10)),
             
@@ -168,7 +143,7 @@ def _example():
     )
     z1.add(
         xys=2*xys*na([-1,1])+na([8,-7]),
-        color=rndint(255,size=(len(xys),3)),
+        colors=rndint(255,size=(len(xys),3)),
         fill_indicies=( 
             [rndint(200,size=(10)),
             rndint(200,size=(10)),
@@ -177,24 +152,24 @@ def _example():
     )        
     z1.add(
         xys=1*xys*na([-1,1])+na([12,3]),
-        color=zeros((len(xys),3),np.uint8)+(255,127,31),
+        colors=zeros((len(xys),3),np.uint8)+(255,127,31),
         line_endpoint_indicies=rndint(400,size=(30,2)),
     )
 
     z1.add(
         xys+na([-5,4]),
-        color=(255,255,255),
+        colors=(255,255,255),
         line_endpoint_indicies=rndint(200,size=(30,2)),
 
     )
     z1.add(
         xys=na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
-        color=(0,255,0),
+        colors=(0,255,0),
         line_endpoint_indicies=((0,1),(1,2),(2,3),(3,4)),
     )
     z1.add(
         xys=0.75*na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
-        color=(255,0,0),
+        colors=(255,0,0),
         fill_indicies=([[0,1,2,3,4]]),
     )
     z1.graph(-9,9,-9,thickness=1)

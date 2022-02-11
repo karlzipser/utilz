@@ -19,27 +19,16 @@ class ZGraph3d(Attr_menu_enabled):
         Attr_menu_enabled.__init__(_)
         _.xyzs_color_mode_list = []
         _.zgraph = ZGraph2d(img_width,img_height,title)
-
-        _.Transformations = {
-            'x' : get_xRotationMatrix,
-            'y' : get_yRotationMatrix,
-            'z' : get_zRotationMatrix,
-            's' : get_xyzScalingMatrix,
-            'e' : get_xTranslationMatrix,
-            'r' : get_yTranslationMatrix,
-            't' : get_zTranslationMatrix,
-        }
-
         _.attrs_to_dict()
 
 
     def add(
         _,
         xyzs,
+        colors=((255,255,255),),
         mode='points',
-        color=((255,255,255),),
     ):
-        _.xyzs_color_mode_list.append((na(xyzs),color,mode))
+        _.xyzs_color_mode_list.append((na(xyzs),colors,mode))
 
 
     def graph(
@@ -51,17 +40,19 @@ class ZGraph3d(Attr_menu_enabled):
     ):
         _.zgraph.clear()
 
-        for xyzs, color, mode in _.xyzs_color_mode_list:
+        for xyzs, colors, mode in _.xyzs_color_mode_list:
+
+            xyzs = xyzs_to_4D(xyzs)
 
             if transform is not None:
 
-                xyzs = xyzs @ transform
+                xyzs_trans = xyzs @ transform
 
             else:
 
-                xyzs = 1.0 * xyzs
+                xyzs_trans = 1.0 * xyzs
 
-            _.zgraph.add( xyzs[:,:2], color, mode )
+            _.zgraph.add( xyzs_trans[:,:2], colors, mode )
 
         pixels, untrimmed_pixels = _.zgraph.graph( xmin, xmax, ymin )
 
@@ -92,37 +83,32 @@ def _example(
 
     if 'example 1':
         print('e.g. 1')
-        """
-        xyzs_list = []
-        color_list = []
-        line_endpoint_indicies_list = []
-        fill_indicies_list = []
 
-        
-        for i in range(20):
-            xyzs = rndn(num_pts,3)
-            xyzs_list.append(xyzs)
-            color_list.append(rndint(255,size=(len(xyzs_list[0]),3)))
-            line_endpoint_indicies_list.append(rndint(num_indicies,size=(30,2)))
-            fill_indicies_list.append(
-                [
-                    rndint(num_indicies,size=(3)),
-                    rndint(num_indicies,size=(3)),
-                    rndint(num_indicies,size=(3))
-                ]
-            )
-        xmin,xmax,ymin = -5,5,-5
-        """
-        xyzs = rndn(1000,4)
+        xyzs = rndn(1000,3)
         v = ZGraph3d()
-        v.add(xyzs,color=rndint(255,size=(len(xyzs),3)),mode='points')
+        v.add(rndn(4,3),colors=((45,78,198),),mode='fill')
+        colors=rndint(255,size=(len(xyzs),3))
+        v.add(xyzs,colors,mode='points')
+        a = rndn(10,3)
+        v.add(a,colors=((255,255,255),),mode='line')
+        
         v.graph()
         v.show()
 
         raw_enter()
+        for j in range(5):
+            for i in range(45):
+                v.graph(transform=get_xRotationMatrix(i))
+                v.show()
+                spause()
+                time.sleep(0.01)
+            for i in range(45):
+                v.graph(transform=get_yRotationMatrix(i))
+                v.show()
+                spause()
+                time.sleep(0.01)
 
-
-
+        raw_enter()
 
 
 if __name__ == '__main__':
