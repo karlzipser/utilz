@@ -11,12 +11,16 @@ class ZGraph2d:
         _,
         width=400,
         height=400,
+        img=None,
         title='ZGraph2d'
     ):
         _.title = title
-        _.width = width
-        _.height = height
-        _.img = get_blank_rgb(height,width)
+        if img is not None:
+            _.img_bkp = img.copy()
+            _.img = img
+        else:
+            _.img = get_blank_rgb(height,width)
+            _.img_bkp = None
         _.xys_color_mode_list = []
 
 
@@ -50,7 +54,6 @@ class ZGraph2d:
                 aspect_ratio, 
                 colors,
             )
-
             if mode == 'fill':
                 cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=colors[0])
 
@@ -85,16 +88,10 @@ class ZGraph2d:
         Clear x-y data and zero image without reallocating it.
         """
         _.xys_color_mode_list = []
-        _.img *= 0
-        
-
-
-
-
-
-
-
-
+        if _.img_bkp is None:
+            _.img *= 0
+        else:
+            _.img = _.img_bkp.copy()        
 
 
 
@@ -112,9 +109,9 @@ def _example():
     print('e.g. 0')
     xys=rndn(5000,2)
     z0=ZGraph2d(
-        300,
-        300,
-        title='ZGraph2d z0')
+        title='ZGraph2d z0',
+        img=z55(rndn(300,300,3))//2,
+    )
     z0.add(rndn(10,2),colors=((0,255,0),),mode='fill')
     z0.add(xys+na([-2,0]),colors=rndint(255,size=(len(xys),3)),mode='points')
     z0.add(rndn(10,2),colors=((0,0,255),),mode='line')
@@ -128,74 +125,6 @@ def _example():
     z0.show()
     raw_enter();CA()
 
-    """
-    print('e.g. 1')
-    xys=rndn(1000,2)
-    z1=ZGraph(600,400,title='ZGraph z1')
-    z1.add(
-        xys=2*xys*na([-1,1])+na([8,-7]),
-        colors=rndint(255,size=(len(xys),3)),
-        fill_indicies=( 
-            [rndint(200,size=(10)),
-            
-            ]
-        ),
-    )
-    z1.add(
-        xys=2*xys*na([-1,1])+na([8,-7]),
-        colors=rndint(255,size=(len(xys),3)),
-        fill_indicies=( 
-            [rndint(200,size=(10)),
-            rndint(200,size=(10)),
-            rndint(200,size=(10)),]
-        ),
-    )        
-    z1.add(
-        xys=1*xys*na([-1,1])+na([12,3]),
-        colors=zeros((len(xys),3),np.uint8)+(255,127,31),
-        line_endpoint_indicies=rndint(400,size=(30,2)),
-    )
-
-    z1.add(
-        xys+na([-5,4]),
-        colors=(255,255,255),
-        line_endpoint_indicies=rndint(200,size=(30,2)),
-
-    )
-    z1.add(
-        xys=na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
-        colors=(0,255,0),
-        line_endpoint_indicies=((0,1),(1,2),(2,3),(3,4)),
-    )
-    z1.add(
-        xys=0.75*na([(1,1),(1,-1),(-1,-1),(-1,1),(1,1)]),
-        colors=(255,0,0),
-        fill_indicies=([[0,1,2,3,4]]),
-    )
-    z1.graph(-9,9,-9,thickness=1)
-    z1.show(1.)
-    z1.report()
-    raw_enter();CA()
-
-    print('e.g. 2')
-    xys=rndn(20000,2)
-    z0=ZGraph(1000,1000,title='ZGraph z0')
-    t0 = 10
-    timer = Timer(t0)
-    print('wait',timer.time_s,'seconds')
-    ctr = 0
-    while not timer.rcheck():
-        z0.clear()
-        z0.add(xys+na([0,0]),rndint(255,size=(len(xys),3)))
-        z0.graph(-5,5,-5)
-        ctr += 1
-    print('rate =',dp(ctr/t0),'Hz')
-    z0.report()
-    z0.show()
-    raw_enter();CA()
-    """
-
-    
 
 
 

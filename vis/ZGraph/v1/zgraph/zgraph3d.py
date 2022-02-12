@@ -14,11 +14,16 @@ class ZGraph3d(Attr_menu_enabled):
         _,
         width=400,
         height=400,
+        img=None,
         title='ZGraph3d'
     ):
         _.xyzs_color_mode_list = []
-        _.zgraph = ZGraph2d(width,height,title)
-
+        _.zgraph = ZGraph2d(
+            width=width,
+            height=height,
+            img=img,
+            title=title,
+        )
 
     def add(
         _,
@@ -34,15 +39,21 @@ class ZGraph3d(Attr_menu_enabled):
         xmin=-5,
         xmax=5,
         ymin=-5,
-        transform=None,
+        transforms=[],
     ):
-        _.zgraph.clear()
-
         for xyzs, colors, mode in _.xyzs_color_mode_list:
 
             xyzs = xyzs_to_4D(xyzs)
 
-            if transform is not None:
+            if len(transforms):
+
+                B = transforms[0]
+
+                if len(transforms) > 1:
+                    for C in transforms[1:]:
+                        B = B @ C
+
+                transform = B
 
                 xyzs_trans = xyzs @ transform
 
@@ -57,13 +68,13 @@ class ZGraph3d(Attr_menu_enabled):
         return pixels, untrimmed_pixels
 
 
-
     def show(_,scale=1.0):
 
         _.zgraph.show(scale)
 
 
-            
+    def clear(_):
+        _.zgraph.clear()
 
 
 
@@ -83,7 +94,7 @@ def _example(
         print('e.g. 1')
 
         xyzs = rndn(1000,3)
-        v = ZGraph3d()
+        v = ZGraph3d(img=z55(rndn(300,300,3))//2)
         v.add(rndn(4,3),colors=((45,78,198),),mode='fill')
         colors=rndint(255,size=(len(xyzs),3))
         v.add(xyzs,colors,mode='points')
@@ -96,17 +107,19 @@ def _example(
         raw_enter()
         for j in range(5):
             for i in range(45):
-                v.graph(transform=get_xRotationMatrix(i))
+                v.zgraph.clear()
+                v.graph(transforms=[get_xRotationMatrix(i)])
                 v.show()
                 spause()
                 time.sleep(0.01)
             for i in range(45):
-                v.graph(transform=get_yRotationMatrix(i))
+                v.graph(transforms=[get_yRotationMatrix(i),get_zRotationMatrix(i)])
                 v.show()
                 spause()
                 time.sleep(0.01)
 
         raw_enter()
+
 
 
 if __name__ == '__main__':

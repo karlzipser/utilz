@@ -23,7 +23,7 @@ def pts2img(
     colors -- is this is a single RGB value, it will be applied to every
             pixel. If an array of colors, it will be applied colorwise.
     """
-
+    
     pixels,untrimmed_pixels = pts2pixels(
         xys,
         xmin,
