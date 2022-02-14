@@ -1,7 +1,7 @@
 
 from utilz.vis import *
 from utilz.karguments.input__select__menu import *
-from utilz.vis.ZGraph.zgraph import *
+from utilz.vis.ZGraph.v1.zgraph.zgraph2d import *
 from utilz.vis.other import pseudocolors
 
 
