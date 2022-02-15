@@ -105,7 +105,7 @@ def _example(
         v.show()
 
         raw_enter()
-        for j in range(5):
+        for j in range(2):
             for i in range(45):
                 v.zgraph.clear()
                 v.graph(transforms=[get_xRotationMatrix(i)])
@@ -119,6 +119,82 @@ def _example(
                 time.sleep(0.01)
 
         raw_enter()
+
+
+
+    if 'e.g. 2':
+
+        print('e.g. 2')
+
+        try:
+            xyzs_list = lo(opjD('sample_point_cloud_list'))
+        except:
+            print("opjD('sample_point_cloud_list.pkl') not found")
+            return
+
+
+        color_list = []
+        i = 30
+        t0 = time.time()
+        r = xyzs_list[i][:,2].copy()
+        b = z55(r)
+        r[r>0.5]=0.5
+        r=z2o(r)
+        r *= 255
+        r = r.astype(np.uint8)
+        g = 255-r
+        rgb = zeros((len(xyzs_list[i]),3),np.uint8)
+        rgb[:,0] = r
+        rgb[:,1] = g
+        rgb[:,2] = b
+        color_list.append(rgb)
+
+        olist = []
+        for j in [20]:#range(10,33,3):
+            v = ZGraph3d(300,600)
+                
+            v.add(xyzs_list[i][:,:3],color_list[0],mode='points')
+
+            pixels, untrimmed_pixels = v.graph(-j,j,0,transforms=[get_zRotationMatrix(-90)])
+            #v.show()
+
+            t1 = time.time()-t0
+            print(dp(1/t1))
+
+            ol, P, O = check_pixel_overlap(pixels,j)
+            olist.append(ol)
+            if False:
+                for p in P:
+                    if len(P[p]) > 1:
+                        v.zgraph.img[2000-p[1],p[0],:] = 255
+            mi(v.zgraph.img,0);spause()
+            raw_enter()
+
+
+def check_pixel_overlap(pixels,f):
+    P = {}
+    for p in pixels:
+        x,y = p[0],p[1]
+        xy = (x,y)
+        if xy not in P:
+            P[xy] = []
+        P[xy].append(p)
+    O = {}
+    for xy in P:
+        n = len(P[xy])
+        if n not in O:
+            O[n] = 0
+        O[n] += 1
+
+    vals = na(list(O.values()))
+    figure(f)
+    clf()
+    plot(O.keys(),vals/np.sum(vals),'o')
+    spause()
+    return (f,O[1]/np.sum(vals)),P,O
+
+
+
 
 
 
