@@ -1,7 +1,7 @@
 
 from utilz.vis import *
 from utilz.karguments.input__select__menu import *
-from utilz.vis.ZGraph.v1.zgraph.main import *
+from utilz.vis.ZGraph.zgraph.zgraph2d import *
 from utilz.vis.other import pseudocolors
 
 
@@ -14,7 +14,7 @@ class Viewer(Attr_menu_enabled):
     ):
         Attr_menu_enabled.__init__(_)
         _.xyzs_color_mode_list = []
-        _.zgraph = ZGraph(img_width,img_height,title)
+        _.zgraph = ZGraph2d(img_width,img_height,None,title)
 
 
         _.Transformations = {

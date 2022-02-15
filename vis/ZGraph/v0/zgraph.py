@@ -4,7 +4,7 @@ print('\n',__file__,'adding',parent_path,'to sys.path.','\n')
 sys.path.append(parent_path)
 
 from utilz.vis import *
-from ZGraph.utils import *
+from v0.utils import *
 
 class ZGraph:
     def __init__(
