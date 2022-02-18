@@ -44,7 +44,10 @@ class ZGraph2d:
         _.graph_has_been_called = True
 
         for xys, colors, mode in _.xys_color_mode_list:
-
+            if mode  in ['points']:
+                change = True
+            else:
+                change = False
             pixels, untrimmed_pixels = pts2img( 
                 _.img, 
                 xys, 
@@ -53,12 +56,21 @@ class ZGraph2d:
                 ymin, 
                 aspect_ratio, 
                 colors,
+                change,
             )
             if mode == 'fill':
                 cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=colors[0])
 
             elif mode == 'line':
-                cv2.drawContours(_.img,[pixels[:,:2]],-1,color=colors[0])
+                try:
+                    #xs = 1500//2-pixels[:,0]
+                    #yx = 200//2-pixels[:,1]
+                    #pixels[:,0] = xs
+                    #pixels[:,1] = ys
+                    print(pixels)
+                    cv2.drawContours(_.img,[pixels[:,:2]],-1,color=colors[0])
+                except:
+                    cr('contour failed')
 
             elif mode == 'points':
                 pass

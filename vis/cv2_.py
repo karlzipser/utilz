@@ -75,10 +75,29 @@ try:
             if k == ord('q'):
                 return
 
-
+    def dict_to_sorted_list(d):
+        l = []
+        ks = sorted(d.keys(),key=natural_keys)
+        for k in ks:
+            l.append(d[k])
+        return l
+    
     def mcia_folder(path,delay=33,title='mcia_folder',scale=1.0,color_mode=cv2.COLOR_RGB2BGR):
         l=load_img_folder_to_list(path)
         mcia(array(l),delay=delay,title=title,scale=scale,color_mode=cv2.COLOR_RGB2BGR)
+
+
+    def load_img_folder_to_dict(img_folder):
+        '''Assume that *.* selects only images.'''
+        img_fns = gg(opj(img_folder,'*.*'))
+        imgs = {}
+        for f in img_fns:
+            imgs[fname(f)] = imread(f)
+        return imgs
+
+    def load_img_folder_to_list(img_folder):
+        return dict_to_sorted_list(load_img_folder_to_dict(img_folder))
+
 
 
     def resize_to_extent(img,extent,interpolation=cv2.INTER_AREA): #INTER_LINEAR):

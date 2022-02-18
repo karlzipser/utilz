@@ -10,6 +10,7 @@ def pts2img(
     ymin,
     aspect_ratio,
     colors=((255,255,255),),
+    change=True,
 ):
     """Project array of x-y points into an RGB image.
 
@@ -32,11 +33,11 @@ def pts2img(
         shape(img),
         colors = colors,
     )
-
-    if len(colors) == 3 and len(shape(colors)) == 1:
-        img[shape(img)[0]-1-pixels[:,1],pixels[:,0]] = colors
-    else:
-        img[shape(img)[0]-1-pixels[:,1],pixels[:,0],:] = pixels[:,-3:]
+    if change:
+        if len(colors) == 3 and len(shape(colors)) == 1:
+            img[shape(img)[0]-1-pixels[:,1],pixels[:,0]] = colors
+        else:
+            img[shape(img)[0]-1-pixels[:,1],pixels[:,0],:] = pixels[:,-3:]
     return pixels,untrimmed_pixels
 
 
