@@ -194,6 +194,12 @@ def insure_rgb(img):
     return img
 
 
+def get_image_column(img_lst):
+    img = img_lst[0].copy()
+    for i in range(1,len(img_lst)):
+        img = np.concatenate((img,img_lst[i]),axis=0)
+    return img
+
 
 def get_image_row(
     img_lst,
