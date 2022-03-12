@@ -1,6 +1,7 @@
 
 
-
+from utilz import *
+from utilz.vis.matplotlib_ import *
 
 
 
@@ -8,6 +9,8 @@
 from math import acos
 from math import sqrt
 from math import pi
+import numpy as np
+import math
 
 def length(v):
     return sqrt(v[0]**2+v[1]**2)
@@ -95,7 +98,7 @@ def rotatePolygon(polygon,theta):
     """http://stackoverflow.com/questions/20023209/function-for-rotating-2d-objects
     Rotates the given polygon which consists of corners represented as (x,y),
     around the ORIGIN, clock-wise, theta degrees"""
-    theta = math.radians(theta)
+    theta = np.radians(theta)
     rotatedPolygon = []
     for corner in polygon :
         rotatedPolygon.append(( corner[0]*math.cos(theta)-corner[1]*math.sin(theta) , corner[0]*math.sin(theta)+corner[1]*math.cos(theta)) )
@@ -103,7 +106,7 @@ def rotatePolygon(polygon,theta):
 
 
 def rotatePolygon__array_version(polygon,theta):
-    theta = math.radians(theta)
+    theta = np.radians(theta)
     for i in rlen(polygon):
         corner = polygon[i,:]
         polygon[i,:] = na(( corner[0]*math.cos(theta)-corner[1]*math.sin(theta) , corner[0]*math.sin(theta)+corner[1]*math.cos(theta)) )
