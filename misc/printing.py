@@ -11,6 +11,7 @@ def kprint(
     ignore_types=[],
     numbering=True,
     max_items=999999,
+    make_sorted=False,
     ra=0,
     r=0,
     p=0,
@@ -62,7 +63,10 @@ def kprint(
                 break
     elif type(item) == dict:
         ctr = 0
-        for k in sorted(item.keys()):
+        ks = item.keys()
+        if make_sorted:
+            ks = sorted(ks)
+        for k in ks:
             if k in ignore_keys:
                 continue
             if len(only_keys) > 0:
