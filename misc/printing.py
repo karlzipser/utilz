@@ -90,6 +90,10 @@ def kprint(
         raw_enter()
 
 
+def kpo(obj):
+    kprint(obj.__dict__)
+
+
 
 function_types = [type(sorted),type(fname)]
 
