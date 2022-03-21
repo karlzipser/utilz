@@ -16,30 +16,49 @@ for k in __required_types__:
 
 class Int_float_str_attr_menu_enabled():
     def __init__(_):
-        pass
+        super().__init__()
+        _.attribute_set=False
+        _._name = type(_).__name__
     def attrs_to_dict(_):
         _.Ad = {}
         for k in _.__dict__.keys():
             if k[0] == '_':
                 continue
-            if type(_.__dict__[k]) not in [int,float,str]:
+            if type(_.__dict__[k]) not in [ int, float, str ]:
                 continue
             _.Ad[k] = _.__dict__[k]
     def dict_to_attrs(_):
-        _.attrs_to_dict()
+        if not _.attribute_set:
+            _.attrs_to_dict()
+            _.attribute_set=True
         for k in _.Ad:
+            if k[0] == '_':
+                continue
             assert k in _.__dict__.keys()
             _.__dict__[k] = _.Ad[k]
     def geta(_):
-        _.attrs_to_dict()
+        if not _.attribute_set:
+            _.attrs_to_dict()
+            _.attribute_set=True
         return select_from_dict(_.Ad,title='\nget_attribute:')
     def seta(_):
-        _.attrs_to_dict()
+        if not _.attribute_set:
+            _.attrs_to_dict()
+            _.attribute_set=True
         input_to_dict(_.Ad,title='\nset_attribute:')
         _.dict_to_attrs()
     def showa(_):
-        _.attrs_to_dict()
-        print_dic_simple(_.Ad,title='Class int, float & str attribute dictonary:')
+        if not _.attribute_set:
+            _.attrs_to_dict()
+            _.attribute_set=True
+        box(
+            print_dic_simple(
+                _.Ad,
+                title='int, float & str attribute dictonary',
+                print_=False
+            ),
+            title=' '+_._name+' ',
+        )
 
 
 
@@ -58,6 +77,29 @@ class zClass(Int_float_str_attr_menu_enabled):
             else:
                 val = defaults[ k ]
             _.__dict__[ k ] = val
+
+
+
+"""
+class Run_with_menu(zClass):
+    def __init__( _, **kwargs ):
+        super().__init__()
+        _.set_inst_vars(
+            defaults = dict(
+                # thread class
+                # menu class
+            )
+            kwargs=kwargs,
+        )
+    def main():
+        thread_ = threadclass
+        menu = menu class
+        # start thread
+        # run loop
+"""
+
+
+
 
 
 
