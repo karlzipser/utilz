@@ -1,19 +1,5 @@
 from utilz.vis import *
-import torch
-import torchvision
-import torchvision.transforms as transforms
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 
-def shape_from_tensor(x):
-    return shape( x.detach().numpy() )
-
-def cuda_to_rgb_image(cu):
-    return z55(cu.detach().cpu().numpy()[0,:].transpose(1,2,0))
-
-
-"""
 __required__ = '__required__'
 __required_types__ = dict(
     __required_array__ =    type(na([0,0])),
@@ -40,16 +26,20 @@ class Int_float_str_attr_menu_enabled():
                 continue
             _.Ad[k] = _.__dict__[k]
     def dict_to_attrs(_):
+        _.attrs_to_dict()
         for k in _.Ad:
             assert k in _.__dict__.keys()
             _.__dict__[k] = _.Ad[k]
     def geta(_):
+        _.attrs_to_dict()
         return select_from_dict(_.Ad,title='\nget_attribute:')
     def seta(_):
+        _.attrs_to_dict()
         input_to_dict(_.Ad,title='\nset_attribute:')
         _.dict_to_attrs()
     def showa(_):
-        print_dic_simple(_.Ad,title='int,float,str attributes dict')
+        _.attrs_to_dict()
+        print_dic_simple(_.Ad,title='Class int, float & str attribute dictonary:')
 
 
 
@@ -70,6 +60,7 @@ class zClass(Int_float_str_attr_menu_enabled):
             _.__dict__[ k ] = val
 
 
+
 if __name__ == '__main__':
     a = zClass()
     a.b = 1
@@ -79,6 +70,6 @@ if __name__ == '__main__':
     cy( a.geta() )
     a.seta()
     a.showa()
-"""
+
 
 #EOF
