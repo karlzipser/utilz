@@ -295,7 +295,9 @@ def is_None(a):
     return False
     
 
-
+def nth(dic,n):
+    ks = kys(dic)
+    return dic[kys[n]]
 
 if __name__ == '__main__':
     eg(__file__)
