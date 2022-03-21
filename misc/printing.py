@@ -1,6 +1,6 @@
 from utilz.core import *
 
-
+import numpy as np
 
 def kprint(
     item,
@@ -94,7 +94,7 @@ def kprint(
                 break            
     elif not item_printed:
         if type(item) == type(np.zeros([0,0,0])) and array_shape_only:
-            item = shape(item)
+            item = np.shape(item)
         color_print(spaces,item,'`g',s0='',s1='')
 
     if p:
