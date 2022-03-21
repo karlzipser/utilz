@@ -1,5 +1,7 @@
 from utilz.core import *
 
+
+
 def kprint(
     item,
     title='',
@@ -12,6 +14,7 @@ def kprint(
     numbering=True,
     max_items=999999,
     make_sorted=False,
+    array_shape_only=False,
     ra=0,
     r=0,
     p=0,
@@ -57,9 +60,14 @@ def kprint(
     if type(item) == list:
         ctr = 0
         for i in item:
-            kprint(i,title=None,spaces=spaces+space_increment,space_increment=space_increment,ignore_keys=ignore_keys,only_keys=only_keys,ignore_types=ignore_types,numbering=numbering)
+            kprint(i,title=None,spaces=spaces+space_increment,space_increment=space_increment,ignore_keys=ignore_keys,only_keys=only_keys,ignore_types=ignore_types,numbering=numbering,
+                max_items=max_items,
+                array_shape_only=array_shape_only,
+            )
             ctr += 1
+            #cm(ctr,max_items)
             if ctr >= max_items:
+                cg('\t. . .')
                 break
     elif type(item) == dict:
         ctr = 0
@@ -76,11 +84,17 @@ def kprint(
                 l = len(item[k])
             else:
                 l = 1
-            kprint(item[k],title=k,spaces=spaces+space_increment,space_increment=space_increment,ignore_keys=ignore_keys,only_keys=only_keys,ignore_types=ignore_types,numbering=numbering)
+            kprint(item[k],title=k,spaces=spaces+space_increment,space_increment=space_increment,ignore_keys=ignore_keys,only_keys=only_keys,ignore_types=ignore_types,numbering=numbering,
+                max_items=max_items,
+                array_shape_only=array_shape_only,
+            )
             ctr += 1
             if ctr >= max_items:
+                cg('\t. . .')
                 break            
     elif not item_printed:
+        if type(item) == type(np.zeros([0,0,0])) and array_shape_only:
+            item = shape(item)
         color_print(spaces,item,'`g',s0='',s1='')
 
     if p:
@@ -88,6 +102,8 @@ def kprint(
 
     if ra or r:
         raw_enter()
+
+
 
 
 def kpo(obj):
