@@ -87,5 +87,19 @@ def get_zRotationMatrix(theta):
 	]
 )
 
-
+def xyzs_to_4D(xyzs,assume_all_ones=True):
+    s = shape(xyzs)
+    assert len(s) == 2
+    assert s[1] >= 3
+    if s[1] == 4:
+        if assume_all_ones:
+            if xyzs[0,3] == 1:
+                return xyzs
+        xyzs[:,3] = 1
+    elif s[1] == 3:
+        xyzs = np.concatenate((xyzs,1+zeros((s[0],1))),1)
+    else:
+        assert False
+    return xyzs
+    
 #EOF
