@@ -257,6 +257,11 @@ def an_element(dic):
     return dic[a_key(dic)]
 
 
+def nth(dic,n):
+    ks = kys(dic)
+    return dic[ks[n]]
+
+
 def remove_empty(l):
     m = []
     for a in l:
@@ -295,9 +300,7 @@ def is_None(a):
     return False
     
 
-def nth(dic,n):
-    ks = kys(dic)
-    return dic[kys[n]]
+
 
 if __name__ == '__main__':
     eg(__file__)
