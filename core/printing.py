@@ -89,7 +89,7 @@ def dp(f,n=2):
         f *= 10.0**n
         f = int(f)
         return f/(10.0**n)
-    elif type(f) is type(zeros([1])):
+    elif type(f) is type(np.zeros([1])):
         if n == 0:
             return f.astype(int)
         else:
