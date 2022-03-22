@@ -64,7 +64,7 @@ def beep():
     print('\007')
 
 
-def dp(f,n=2):
+def _dp(f,n=2):
     import numpy as np
     """
     get floats to the right number of decimal places, for display purposes
@@ -76,6 +76,28 @@ def dp(f,n=2):
     f = int(np.round(f))
     return f/(10.0**n)
 
+
+def dp(f,n=2):
+    import numpy as np
+    """
+    get floats to the right number of decimal places, for display purposes
+    """
+    assert(n>=0)
+    if is_number(f):
+        if n == 0:
+            return int(f)
+        f *= 10.0**n
+        f = int(f)
+        return f/(10.0**n)
+    elif type(f) is type(zeros([1])):
+        if n == 0:
+            return f.astype(int)
+        else:
+            f *= 10.0**n
+            f = f.astype(int)
+            return f/(10.0**n)
+    else:
+        assert False
 
 def et():
     print(
