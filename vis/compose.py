@@ -228,7 +228,11 @@ def get_image_row(
     for i in range(len_img_lst):
         img = img_lst[i]
         img = insure_rgb(img)
-        img = cv2.resize(img,(int(max_extent*(shape(img)[1]/shape(img)[0])),max_extent))
+        img = cv2.resize(
+            img,
+            (int(max_extent*(shape(img)[1]/shape(img)[0])),max_extent),
+            interpolation=cv2.INTER_NEAREST,
+        )
         img_lst2.append(img)
         if i < len_img_lst-1:
             img_lst2.append(blank_space)
