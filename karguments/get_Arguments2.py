@@ -6,6 +6,9 @@ from utilz.karguments.defaults import process_defaults
 
 def get_Arguments2(Defaults,values_only=True,verbose=True,f=''):
 
+    if interactive():
+        return Defaults
+
     if 'h' in Defaults:
         cE('Error, "h" in Defaults is reserved for help')
         assert False

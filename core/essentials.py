@@ -1,6 +1,6 @@
 from utilz.core.imports import *
 
-
+    
 def boxed(text,title=''):
     # https://stackoverflow.com/questions/20756516/python-create-a-text-border-with-dynamic-size
     text = str(text)
@@ -168,9 +168,7 @@ def natural_keys(text):
     return [ atoi(c) for c in re.split('(\d+)', text) ]
 
 
-def interactive():
-    import __main__ as main
-    return not hasattr(main, '__file__')
+
     
 
 def all_values(D):
