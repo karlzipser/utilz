@@ -59,9 +59,13 @@ class ZGraph2d:
                 change,
             )
             if mode == 'fill':
-                cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=colors[0])
-
+                kprint(pixels[:,:2])
+                if len(pixels):
+                #cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=colors[0])
+                    cv2.drawContours(_.img, [pixels[:,:2]], -1, (colors[0]), -1)
+                    cm('fill')
             elif mode == 'line':
+                cm('line')
                 try:
                     #xs = 1500//2-pixels[:,0]
                     #yx = 200//2-pixels[:,1]
