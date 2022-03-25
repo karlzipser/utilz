@@ -59,11 +59,14 @@ class ZGraph2d:
                 change,
             )
             if mode == 'fill':
-                kprint(pixels[:,:2])
-                if len(pixels):
-                #cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=colors[0])
-                    cv2.drawContours(_.img, [pixels[:,:2]], -1, (colors[0]), -1)
-                    cm('fill')
+                #kprint(pixels[:,:2])
+                try:
+                    if len(pixels):
+                    #cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=colors[0])
+                        cv2.drawContours(_.img, [pixels[:,:2]], -1, (colors[0]), -1)
+                        #cm('fill')
+                except:
+                    cr( 'fill failed, pixels =', pixels )
             elif mode == 'line':
                 cm('line')
                 try:
@@ -71,10 +74,10 @@ class ZGraph2d:
                     #yx = 200//2-pixels[:,1]
                     #pixels[:,0] = xs
                     #pixels[:,1] = ys
-                    print(pixels)
+                    #print(pixels)
                     cv2.drawContours(_.img,[pixels[:,:2]],-1,color=colors[0])
                 except:
-                    cr('contour failed')
+                    cr( 'contour failed, pixels =', pixels )
 
             elif mode == 'points':
                 pass

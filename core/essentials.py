@@ -255,9 +255,19 @@ def an_element(dic):
     return dic[a_key(dic)]
 
 
-def nth(dic,n):
-    ks = kys(dic)
-    return dic[ks[n]]
+def kth( dic, i ):
+    """
+    get the ith key of dic
+    """
+    return kys( dic )[i]
+
+def vth( dic, i ):
+    """
+    get the ith value of dic
+    """
+    return dic[ kth( dic, i ) ]
+
+nth = vth
 
 
 def remove_empty(l):
