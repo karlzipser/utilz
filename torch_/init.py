@@ -12,7 +12,13 @@ def shape_from_tensor(x):
 def cuda_to_rgb_image(cu):
     return z55(cu.detach().cpu().numpy()[0,:].transpose(1,2,0))
 
-
+def shape_from_torch(x):
+    s = shape(x)
+    so = []
+    for i in rlen(s):
+        so.append(s[i])
+    return tuple(so)
+    
 """
 __required__ = '__required__'
 __required_types__ = dict(
