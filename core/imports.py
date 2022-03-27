@@ -1,5 +1,4 @@
 
-
 def print(*args, stdout=False, **kwargs):
     import sys
     import builtins as __builtins__
@@ -15,9 +14,8 @@ def printr(*args, stdout=False, **kwargs):
     print(*args, end='\r', flush=True,**kwargs)
 
 def interactive():
-    return os.isatty(0)
-    #import __main__ as main
-    #return not hasattr(main, '__file__')
+    import __main__ as main
+    return not hasattr(main, '__file__')
 
 imports = (
     'os',

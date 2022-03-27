@@ -5,7 +5,7 @@ from utilz.karguments.defaults import process_defaults
 
 
 def get_Arguments2(Defaults,values_only=True,verbose=True,f=''):
-
+    cm('verbose =',verbose,r=1)
     if interactive():
         return Defaults
 
