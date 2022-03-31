@@ -19,7 +19,8 @@ def os_system(*args,e=0,r=0,a=1):
     if r:
         raw_enter()
 
-
+def mkdr( path ):
+    os_system('mkdir -p', path )
 
 
 def unix(command_line_str, print_stdout=False, print_stderr=False,print_cmd=False):
