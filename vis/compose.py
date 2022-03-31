@@ -210,6 +210,7 @@ def get_image_row(
     right_blank=True,
     top_blank=True,
     bottom_blank=True,
+    use_z2o=False,
 ):
     if not max_extent:
         for img in img_lst:
@@ -233,6 +234,8 @@ def get_image_row(
             (int(max_extent*(shape(img)[1]/shape(img)[0])),max_extent),
             interpolation=cv2.INTER_NEAREST,
         )
+        if use_z2o:
+            img = z2o(img)
         img_lst2.append(img)
         if i < len_img_lst-1:
             img_lst2.append(blank_space)
