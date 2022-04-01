@@ -68,6 +68,7 @@ def mi(
     cmap = 'gray',
     toolBar = True,
     do_clf = True,
+    use_spause = True,
     do_axis = False ):
     """
     My Imagesc, displays a matrix as grayscale image if 2d, or color if 3d.
@@ -138,6 +139,7 @@ def mi(
         plt.axis('off')
     if len(img_title) > 0:# != 'no title':
         plt.title(img_title)
+    spause()
 #
 ######################
 
