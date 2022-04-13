@@ -6,7 +6,7 @@ def commas(v):
     return '{:,}'.format(v)
 
 
-def d2s_spacer(args,spacer=' ',use_commas=True):
+def d2s_spacer(args,spacer=' ',use_commas=False):
     lst = []
     for e in args:
         try:
