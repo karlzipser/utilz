@@ -68,7 +68,6 @@ class ZGraph2d:
                 except:
                     cr( 'fill failed, pixels =', pixels )
             elif mode == 'line':
-                cm('line')
                 try:
                     #xs = 1500//2-pixels[:,0]
                     #yx = 200//2-pixels[:,1]
