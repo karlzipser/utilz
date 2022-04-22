@@ -157,7 +157,7 @@ def plt_square(half_width=0):
 def pt_plot(xy,color='r'):
     plot(xy[0],xy[1],color+'.')
 
-def pts_plot(xys,color='r',sym='.',ms=None):
+def pts_plot(xys,color='r',sym='.',ms=None,linewidth=1.5):
     if type(xys) == list:
         xys = na(xys)
     if len(shape(xys)) == 1:
@@ -166,9 +166,9 @@ def pts_plot(xys,color='r',sym='.',ms=None):
     x = xys[:,0]
     y = xys[:,1]
     if ms is None:
-        plot(x,y,color+sym)
+        plot(x,y,color+sym,linewidth=linewidth)
     else:
-        plot(x,y,color+sym,ms=ms)
+        plot(x,y,color+sym,ms=ms,linewidth=linewidth)
 
 
 
