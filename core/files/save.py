@@ -1,6 +1,6 @@
 from utilz.core.files.files import *
 
-import pickle5 as pickle
+import pickle#pickle5 as pickle
 def save_obj(obj, name,noisy=False,show_time=False,use_real_path=False):
     #import pickle
     assert_disk_locations([pname(name)])
