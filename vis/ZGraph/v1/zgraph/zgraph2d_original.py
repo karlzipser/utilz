@@ -63,10 +63,10 @@ class ZGraph2d:
                 try:
                     if len(pixels):
                     #cv2.fillPoly(_.img, pts = [pixels[:,:2]], color=colors[0])
-                        cv2.drawContours(_.img, [untrimmed_pixels[:,:2]], -1, (colors[0]), -1)
+                        cv2.drawContours(_.img, [pixels[:,:2]], -1, (colors[0]), -1)
                         #cm('fill')
                 except:
-                    cr( 'fill failed, pixels =', untrimmed_pixels )
+                    cr( 'fill failed, pixels =', pixels )
             elif mode == 'line':
                 try:
                     #xs = 1500//2-pixels[:,0]
@@ -74,9 +74,9 @@ class ZGraph2d:
                     #pixels[:,0] = xs
                     #pixels[:,1] = ys
                     #print(pixels)
-                    cv2.drawContours(_.img,[untrimmed_pixels[:,:2]],-1,color=colors[0])
+                    cv2.drawContours(_.img,[pixels[:,:2]],-1,color=colors[0])
                 except:
-                    cr( 'contour failed, pixels =', untrimmed_pixels )
+                    cr( 'contour failed, pixels =', pixels )
 
             elif mode == 'points':
                 pass
@@ -130,9 +130,9 @@ def _example():
         title='ZGraph2d z0',
         img=z55(rndn(300,300,3))//2,
     )
-    z0.add(5*rndn(10,2),colors=((0,255,0),),mode='fill')
+    z0.add(rndn(10,2),colors=((0,255,0),),mode='fill')
     z0.add(xys+na([-2,0]),colors=rndint(255,size=(len(xys),3)),mode='points')
-    z0.add(5*rndn(10,2),colors=((0,0,255),),mode='line')
+    z0.add(rndn(10,2),colors=((0,0,255),),mode='line')
 
 
     z0.graph(
