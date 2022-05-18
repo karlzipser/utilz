@@ -13,8 +13,6 @@ from utilz.vis.compose import *
 
 from utilz.vis.other import *
 
-from utilz.vis.ZGraph import *
-
 from utilz.vis.rotate import *
 
 from utilz.vis.transform import *

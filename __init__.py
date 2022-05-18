@@ -14,4 +14,8 @@ from utilz.class_.zClass import *
 
 from utilz.vis import *
 
+from utilz.vis2 import *
+
+cm('here',r=1)
+
 #EOF

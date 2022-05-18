@@ -10,6 +10,51 @@ from scipy.optimize import curve_fit
 
 
 
+def inside_test(points , cube3d): 
+    # https://stackoverflow.com/questions/21037241/how-to-determine-a-point-is-inside-or-outside-a-cube
+    """
+    cube3d  =  numpy array of the shape (8,3) with coordinates in the clockwise order. first the bottom plane is considered then the top one.
+    points = array of points with shape (N, 3).
+
+    Returns the indices of the points array which are outside the cube3d
+    """
+    b1,b2,b3,b4,t1,t2,t3,t4 = cube3d
+
+    dir1 = (t1-b1)
+    size1 = np.linalg.norm(dir1)
+    dir1 = dir1 / size1
+
+    dir2 = (b2-b1)
+    size2 = np.linalg.norm(dir2)
+    dir2 = dir2 / size2
+
+    dir3 = (b4-b1)
+    size3 = np.linalg.norm(dir3)
+    dir3 = dir3 / size3
+
+    cube3d_center = (b1 + t3)/2.0
+
+    dir_vec = points - cube3d_center
+
+    res1 = np.where( (np.absolute(np.dot(dir_vec, dir1)) * 2) > size1 )[0]
+    res2 = np.where( (np.absolute(np.dot(dir_vec, dir2)) * 2) > size2 )[0]
+    res3 = np.where( (np.absolute(np.dot(dir_vec, dir3)) * 2) > size3 )[0]
+
+    return list( set().union(res1, res2, res3) )
+
+def inside_test_with_in_out_return(points,cube3d):
+    outpoints_indicies = inside_test(points,cube3d)
+    outpoints = list(map(points.__getitem__, outpoints_indicies))
+    inpoints = []
+    inpoints_indicies = []
+    for i in rlen(points):
+        if i not in outpoints_indicies:
+            inpoints_indicies.append(i)
+    inpoints = list(map(points.__getitem__, inpoints_indicies))
+    return outpoints,inpoints
+
+
+
 
 def _open_imgs_with_Preview(l):
     if type(l) is str:

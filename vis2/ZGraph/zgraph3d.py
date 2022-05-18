@@ -2,10 +2,11 @@ import sys,os
 parent_path = '/'.join(__file__.split('/')[:-2])
 print('\n',__file__,'adding',parent_path,'to sys.path.','\n')
 sys.path.append(parent_path)
+print(__file__)
 
 from utilz.vis import *
 from utilz.karguments.input__select__menu import *
-from zgraph.zgraph2d import *
+from ZGraph.zgraph2d import *
 from utilz.vis.other import pseudocolors
 
 

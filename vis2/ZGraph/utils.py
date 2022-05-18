@@ -1,6 +1,7 @@
 
 from utilz.vis import *
 
+print(__file__)
 
 def pts2img(
     img,
@@ -81,7 +82,7 @@ def pts2pixels(
     xys = na(xys)
     xymin = na( ( xmin, ymin ) )
     xymax = na( ( xmax, ymin+aspect_ratio*(xmax-xmin) ) )
-
+    #cm(min(shape_of_img[:2]),(xys-xymin)/(xymax-xymin) )
     pixels = min(shape_of_img[:2]) * (xys-xymin)/(xymax-xymin)
     assert len(pixels[:,0]) >= 2
     pixels = pixels.astype(int)
