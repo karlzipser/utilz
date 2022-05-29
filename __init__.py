@@ -16,6 +16,6 @@ from utilz.vis import *
 
 from utilz.vis2 import *
 
-cm('here',r=1)
+#cm('here',r=1)
 
 #EOF
