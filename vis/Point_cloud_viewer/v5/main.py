@@ -1,7 +1,7 @@
 
 from utilz.vis import *
 from utilz.karguments.input__select__menu import *
-from utilz.vis.ZGraph.v0.zgraph import *
+from utilz.vis2.ZGraph.zgraph3d import *
 from utilz.vis.other import pseudocolors
 
 
@@ -34,7 +34,7 @@ class Viewer(Attr_menu_enabled):
         _.ymin = ymin
         _.img_width,_.img_height = img_width,img_height
         _.title = title
-        _.zgraph = ZGraph(_.img_width,_.img_height,_.title)
+        _.zgraph = ZGraph3d(width=_.img_width,height=_.img_height,title=_.title)
         _.transformation_list = []
         _.help_str = """'h' : help
          u : undo last transformation
